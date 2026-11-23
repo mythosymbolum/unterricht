@@ -99,8 +99,10 @@ footer{position:fixed;left:0;right:0;bottom:0;background:rgba(247,243,234,.97);b
 .res .q{font-size:15px;color:var(--muted)}
 @media print{
   header,footer,.toast{display:none!important}
-  .slide{display:none!important}
-  .slide.print{display:block!important}
+  .slide{display:none!important;animation:none!important}
+  .slide.on{display:block!important}
+  .card,.it,.res .a,tr{break-inside:avoid;page-break-inside:avoid}
+  .card{box-shadow:none}
   .res .btns{display:none}
   body{background:#fff;font-size:12pt}
   main{padding:0}
@@ -550,7 +552,7 @@ function renderResults(){
   });
   h+=`</div><div class="row btns"><button class="btn" id="print">Drucken / als PDF sichern</button><button class="btn ghost" id="copy">Antworten kopieren</button><button class="btn ghost" id="reset">Alles löschen und neu beginnen</button></div>`;
   el.innerHTML=h;
-  document.getElementById('print').onclick=()=>{el.classList.add('print');try{window.print();}catch(e){}setTimeout(()=>el.classList.remove('print'),500);};
+  document.getElementById('print').onclick=()=>{try{window.print();}catch(e){toast('Drucken geht hier nicht – nutze „Antworten kopieren“.');}};
   document.getElementById('copy').onclick=()=>{
     let t=`Die Zehn Gebote – ${S.name||''}\n\n`;allWrites().forEach(({b})=>{t+=b.q.replace(/<[^>]+>/g,'')+'\n'+(S.w[b.id]||'—')+'\n\n';});
     t+=`Punkte: ${tot}/${max}`;
