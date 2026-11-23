@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Das Kirchenjahr – interaktive Präsentation Kl. 6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#26221d;--paper:#fbf7ee;--V:#9160c0;--W:#fff4cf;--R:#de4f43;--G:#4f9f57;--P:#ec9fc0;--hl:#ffd85a}
+*{box-sizing:border-box;-webkit-user-select:none;user-select:none}
+html,body{margin:0;height:100%;background:#2b2a28;overflow:hidden;font-family:'Patrick Hand','Comic Sans MS',cursive;color:var(--ink)}
+#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{width:1600px;height:900px;position:relative;transform-origin:center center;flex:none}
+.slide{position:absolute;inset:0;background:var(--paper);padding:56px 80px 90px;display:none;overflow:hidden;
+ background-image:radial-gradient(rgba(0,0,0,.05) 1px,transparent 1px);background-size:22px 22px}
+.slide.on{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+h1,h2{font-family:'Gochi Hand',cursive;font-weight:400;margin:0 0 18px;line-height:1.05}
+h1{font-size:96px} h2{font-size:64px}
+.tag{display:inline-block;background:var(--ink);color:#fff;font-size:26px;padding:4px 16px;border-radius:6px 16px 6px 14px;margin-bottom:10px}
+.sk{border:3.5px solid var(--ink);border-radius:255px 18px 225px 18px/18px 225px 18px 255px;background:#fff;box-shadow:5px 5px 0 var(--ink)}
+p,li{font-size:34px;line-height:1.3}
+.btn{font-family:inherit;font-size:30px;padding:10px 26px;cursor:pointer;color:var(--ink);background:#fff;
+ border:3px solid var(--ink);border-radius:14px 6px 16px 6px/6px 16px 6px 14px;box-shadow:4px 4px 0 var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn.y{background:var(--hl)}
+#nav{position:absolute;left:0;right:0;bottom:0;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 30px;z-index:50;pointer-events:none}
+#nav>*{pointer-events:auto}
+#dots{display:flex;gap:10px}
+#dots i{width:16px;height:16px;border:2.5px solid var(--ink);border-radius:50%;display:block;cursor:pointer;background:#fff}
+#dots i.on{background:var(--ink)}
+.bubble{position:relative;background:#fff;border:3.5px solid var(--ink);border-radius:50% 46% 48% 52%/55% 50% 50% 45%;padding:26px 40px;font-size:38px;text-align:center}
+.bubble:after{content:"";position:absolute;bottom:-26px;left:22%;border:14px solid transparent;border-top:22px solid var(--ink)}
+.grid{display:grid;gap:26px}
+.card{font-size:38px;padding:22px 18px;text-align:center;cursor:pointer;transition:transform .15s,background .3s}
+.card:hover{transform:rotate(-1deg) scale(1.02)}
+.ok{background:#bfe6b5!important}.no{animation:shake .45s}
+@keyframes shake{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+.hide{visibility:hidden}.reveal{opacity:0;transition:opacity .4s}.reveal.show{opacity:1}
+.drag{position:absolute;font-size:28px;padding:8px 16px;background:#fff;border:3px solid var(--ink);border-radius:12px 5px 14px 5px/5px 14px 5px 12px;
+ box-shadow:3px 3px 0 var(--ink);cursor:grab;touch-action:none;white-space:nowrap;z-index:5}
+.drag.dragging{cursor:grabbing;z-index:40;box-shadow:8px 8px 0 rgba(0,0,0,.35);transform:rotate(-2deg)}
+.chip{width:96px;height:96px;border-radius:50%;border:4px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:24px;cursor:grab;touch-action:none;box-shadow:3px 3px 0 var(--ink)}
+.counter{font-size:32px}
+svg text{font-family:'Patrick Hand',cursive}
+.flip{perspective:1000px;cursor:pointer}
+.flip .in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.open .in{transform:rotateY(180deg)}
+.flip .f,.flip .b{position:absolute;inset:0;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px}
+.flip .b{transform:rotateY(180deg);background:var(--hl)}
+.pal{display:flex;gap:18px;align-items:center}
+.pal .chip.sel{outline:6px solid var(--hl);outline-offset:4px}
+</style></head><body>
+<div id="wrap"><div id="stage">
+
+<!-- 1 Titel -->
+<section class="slide" data-t="Titel">
+ <div style="display:flex;gap:40px;align-items:center;height:100%">
+  <div style="flex:1">
+   <span class="tag">Religion · Klasse 6</span>
+   <h1>Das Kirchenjahr –<br>ein Jahr mit Jesus</h1>
+   <div class="bubble" style="margin-top:40px;width:640px">Warum feiert die Kirche ihr Jahr im <b>Kreis</b>?</div>
+  </div>
+  <svg id="c-title" viewBox="-14 -14 228 228" width="640" height="640"></svg>
+ </div>
+</section>
+
+<!-- 2 Quiz -->
+<section class="slide" data-t="Einstieg">
+ <span class="tag">Einstieg</span><h2>Wann beginnt das neue Jahr … der Kirche?</h2>
+ <p style="margin:0 0 26px">Tippe auf die richtige Antwort!</p>
+ <div class="grid" id="q1" style="grid-template-columns:repeat(4,1fr)">
+  <div class="card sk" data-ok="0">1. Januar</div><div class="card sk" data-ok="1">1. Advent</div>
+  <div class="card sk" data-ok="0">Ostern</div><div class="card sk" data-ok="0">1. September</div>
+ </div>
+ <div class="reveal" id="q1r" style="margin-top:40px;display:flex;gap:30px">
+  <div class="sk" style="flex:1;padding:22px 30px"><p style="margin:0"><b>Kalenderjahr</b><br>beginnt am 1. Januar</p></div>
+  <div class="sk" style="flex:1;padding:22px 30px"><p style="margin:0"><b>Schuljahr</b><br>beginnt im September</p></div>
+  <div class="sk" style="flex:1;padding:22px 30px;background:var(--hl)"><p style="margin:0"><b>Kirchenjahr</b><br>beginnt am 1. Advent<br>(2026: 29. November)</p></div>
+ </div>
+</section>
+
+<!-- 3 Kreis -->
+<section class="slide" data-t="Kreis">
+ <span class="tag">Das Kirchenjahr als Kreis</span><h2>Drei Teile – ein Weg mit Jesus</h2>
+ <div style="display:flex;gap:50px;align-items:center">
+  <svg id="c-parts" viewBox="-14 -14 228 228" width="600" height="600" style="cursor:pointer"></svg>
+  <div style="flex:1">
+   <div class="sk step" style="padding:18px 26px;margin-bottom:20px;border-left:22px solid var(--V)"><p style="margin:0"><b>Weihnachtsfestkreis</b><br>vom 1. Advent bis zur Taufe des Herrn</p></div>
+   <div class="sk step reveal" style="padding:18px 26px;margin-bottom:20px;border-left:22px solid var(--R)"><p style="margin:0"><b>Osterfestkreis</b><br>vom Aschermittwoch bis Pfingsten</p></div>
+   <div class="sk step reveal" style="padding:18px 26px;margin-bottom:20px;border-left:22px solid var(--G)"><p style="margin:0"><b>Zeit im Jahreskreis</b><br>zweimal im Jahr – endet mit Christkönig</p></div>
+   <div class="bubble step reveal" style="font-size:32px;padding:18px 30px">Im Kirchenjahr gehen wir jedes Jahr den Weg Jesu mit.</div>
+   <button class="btn y" id="partsNext" style="margin-top:28px">weiter aufdecken ▸</button>
+  </div>
+ </div>
+</section>
+
+<!-- 4 Drag Feste -->
+<section class="slide" data-t="Aufgabe 1">
+ <span class="tag">Aufgabe 1</span><h2 style="font-size:54px">Ziehe die Feste an die richtige Stelle im Kreis!</h2>
+ <div style="position:absolute;left:80px;top:190px"><svg id="c-drag" viewBox="-14 -14 228 228" width="640" height="640"></svg></div>
+ <div id="tray" style="position:absolute;left:780px;top:200px;width:760px;height:520px"></div>
+ <div style="position:absolute;left:780px;bottom:96px;display:flex;gap:18px;align-items:center">
+  <span class="counter" id="dragCount">0 / 10 richtig</span>
+  <button class="btn" id="dragReset">neu mischen</button><button class="btn" id="dragSolve">Lösung</button>
+ </div>
+ <p style="position:absolute;left:780px;top:170px;margin:0;font-size:26px">Tipp: Oben beim 1. Advent beginnen, dann im Uhrzeigersinn.</p>
+</section>
+
+<!-- 5 Lösung Feste -->
+<section class="slide" data-t="Feste">
+ <span class="tag">Lösung</span><h2>Was feiern wir? Tippe auf ein Fest!</h2>
+ <div style="display:flex;gap:50px;align-items:center">
+  <svg id="c-info" viewBox="-14 -14 228 228" width="620" height="620"></svg>
+  <div style="flex:1"><div class="sk" id="infoBox" style="padding:30px 36px;min-height:300px">
+   <p style="margin:0;font-size:40px" id="infoT"><b>Tippe auf ein Feld im Kreis.</b></p><p id="infoD" style="margin:14px 0 0"></p></div></div>
+ </div>
+</section>
+
+<!-- 6 Ostern rechnet -->
+<section class="slide" data-t="Aufgabe 2">
+ <span class="tag">Aufgabe 2</span><h2>Ostern ist das Herz des Kirchenjahres</h2>
+ <div style="display:flex;gap:30px;align-items:center;margin-bottom:26px">
+  <div class="bubble" style="font-size:40px;padding:18px 36px">Ostern 2027 ist am <b>Sonntag, 28. März</b>!</div>
+  <p style="flex:1;margin:0;font-size:30px">Ostern ist am <b>ersten Sonntag nach dem ersten Frühlingsvollmond</b>. Darum „wandern“ Aschermittwoch, Himmelfahrt und Pfingsten jedes Jahr mit.</p>
+ </div>
+ <div class="grid" style="grid-template-columns:repeat(3,1fr)">
+  <div class="flip" style="height:330px"><div class="in"><div class="f sk"><h2 style="font-size:52px">Aschermittwoch</h2><p>Beginn der Fastenzeit:<br>40 Tage – Sonntage zählen nicht mit</p><small style="font-size:24px">tippen zum Aufdecken</small></div><div class="b sk"><h2 style="font-size:52px">10. Februar 2027</h2><p>46 Tage vor Ostern</p></div></div></div>
+  <div class="flip" style="height:330px"><div class="in"><div class="f sk"><h2 style="font-size:52px">Christi Himmelfahrt</h2><p>immer ein Donnerstag,<br>am 40. Tag der Osterzeit<br>(10 Tage vor Pfingsten)</p><small style="font-size:24px">tippen zum Aufdecken</small></div><div class="b sk"><h2 style="font-size:52px">6. Mai 2027</h2><p>Jesus kehrt zum Vater zurück</p></div></div></div>
+  <div class="flip" style="height:330px"><div class="in"><div class="f sk"><h2 style="font-size:52px">Pfingsten</h2><p>genau 7 Wochen nach Ostern<br>(50. Tag)</p><small style="font-size:24px">tippen zum Aufdecken</small></div><div class="b sk"><h2 style="font-size:52px">16. Mai 2027</h2><p>Der Heilige Geist kommt</p></div></div></div>
+ </div>
+</section>
+
+<!-- 7 Farben -->
+<section class="slide" data-t="Farben">
+ <span class="tag">Die liturgischen Farben</span><h2>Tippe auf ein Messgewand!</h2>
+ <div class="grid" id="kas" style="grid-template-columns:repeat(4,1fr);align-items:start"></div>
+ <p style="position:absolute;left:80px;right:80px;bottom:90px;margin:0;font-size:28px"><b>Extra:</b> <span style="background:var(--P);padding:0 10px;border-radius:6px">Rosa</span> am 3. Advent (Gaudete) und 4. Fastensonntag (Laetare) · <span style="background:#222;color:#fff;padding:0 10px;border-radius:6px">Schwarz</span> an Allerseelen und bei Beerdigungen möglich</p>
+</section>
+
+<!-- 8 Farben ziehen -->
+<section class="slide" data-t="Aufgabe 3">
+ <span class="tag">Aufgabe 3</span><h2>Welche Farbe passt? Ziehe die Farbe auf das Fest!</h2>
+ <div class="pal" id="pal8" style="margin-bottom:30px"></div>
+ <div class="grid" id="fc8" style="grid-template-columns:repeat(4,1fr)"></div>
+ <div style="position:absolute;left:80px;bottom:96px;display:flex;gap:18px;align-items:center"><span class="counter" id="c8">0 / 8 richtig</span><button class="btn" id="r8">zurücksetzen</button></div>
+</section>
+
+<!-- 9 Detektiv -->
+<section class="slide" data-t="Aufgabe 4">
+ <span class="tag">Aufgabe 4 · Partnerarbeit</span><h2>Farbdetektive: Was für ein Tag ist heute?</h2>
+ <div class="grid" id="det" style="grid-template-columns:repeat(3,1fr)"></div>
+ <div style="position:absolute;left:80px;bottom:96px;display:flex;gap:18px;align-items:center">
+  <button class="btn y" id="tim">⏱ 3 Minuten</button><span class="counter" id="timT"></span>
+  <span style="font-size:28px">Begründet eure Antwort mit der Bedeutung der Farbe!</span></div>
+</section>
+
+<!-- 10 Kreis färben -->
+<section class="slide" data-t="Aufgabe 5">
+ <span class="tag">Aufgabe 5</span><h2 style="font-size:54px">Der Kreis bekommt Farbe!</h2>
+ <div style="display:flex;gap:50px;align-items:flex-start">
+  <svg id="c-paint" viewBox="-14 -14 228 228" width="640" height="640"></svg>
+  <div style="flex:1">
+   <p style="margin:0 0 20px">1. Farbe antippen<br>2. Feld im Kreis antippen</p>
+   <div class="pal" id="pal10" style="margin-bottom:34px"></div>
+   <div style="display:flex;gap:18px;flex-wrap:wrap"><button class="btn y" id="chk10">prüfen</button><button class="btn" id="clr10">löschen</button><button class="btn" id="sol10">Lösung</button></div>
+   <p id="msg10" style="margin-top:30px"></p>
+  </div>
+ </div>
+</section>
+
+<!-- 11 Hefteintrag -->
+<section class="slide" data-t="Hefteintrag">
+ <span class="tag">Hefteintrag</span><h2>Das Kirchenjahr</h2>
+ <div style="display:flex;gap:60px;align-items:center">
+  <svg id="c-heft" viewBox="-14 -14 228 228" width="620" height="620"></svg>
+  <div style="flex:1">
+   <div class="sk" style="padding:20px 30px;margin-bottom:22px"><p style="margin:0">① Das Kirchenjahr beginnt am <b>1. Advent</b> und endet mit <b>Christkönig</b>.</p></div>
+   <div class="sk" style="padding:20px 30px;margin-bottom:22px"><p style="margin:0">② <b>Ostern</b> ist das wichtigste Fest: Jesus ist auferstanden.</p></div>
+   <div class="sk" style="padding:20px 30px"><p style="margin:0">③ Jede liturgische Farbe hat eine Bedeutung:<br><b style="color:var(--V)">violett</b> Umkehr · <b style="color:#b8962e">weiß</b> Freude · <b style="color:var(--R)">rot</b> Heiliger Geist · <b style="color:var(--G)">grün</b> Hoffnung</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- 12 Exit -->
+<section class="slide" data-t="Exit-Quiz">
+ <span class="tag">Exit-Quiz</span><h2 id="exQ">…</h2>
+ <div class="grid" id="exA" style="grid-template-columns:repeat(2,1fr);margin-top:30px"></div>
+ <div style="position:absolute;left:80px;bottom:96px;display:flex;gap:18px;align-items:center">
+  <span class="counter" id="exN"></span><button class="btn y" id="exNext">nächste Frage ▸</button></div>
+</section>
+
+<div id="nav"><button class="btn" id="prev">◂</button><div id="dots"></div>
+ <div style="display:flex;gap:12px"><button class="btn" id="fs">⛶</button><button class="btn" id="next">▸</button></div></div>
+</div></div>
+
+<script>
+const SEG = [["Advent", "kranz", "V"], ["Weihnachten", "krippe", "W"], ["Erscheinung des Herrn", "stern", "W"], ["Zeit im Jahreskreis", "blatt", "G"], ["Aschermittwoch / Fastenzeit", "asche", "V"], ["Palmsonntag", "palme", "R"], ["Karfreitag", "kreuz", "R"], ["Ostern", "grab", "W"], ["Christi Himmelfahrt", "wolke", "W"], ["Pfingsten", "taube", "R"], ["Zeit im Jahreskreis", "aehre", "G"], ["Christkönig", "krone", "W"]];
+const ICONS = {"kranz": "<ellipse cx=\"0\" cy=\"5\" rx=\"10\" ry=\"3.6\" fill=\"#ddd\" stroke-width=\"1\"/>\n  <path d=\"M-7 4 V-3 M-2.5 5.5 V-2 M2.5 5.5 V-2 M7 4 V-3\" stroke-width=\"2.4\"/>\n  <path d=\"M-7 -4.5 q-1.2 -2 0 -4 q1.2 2 0 4 M-2.5 -3.5 q-1.2 -2 0 -4 q1.2 2 0 4\" stroke-width=\".8\" fill=\"#fff\"/>", "krippe": "<path d=\"M-9 8 L-4 -1 M9 8 L4 -1 M-9 -1 L9 -1 L6 4 L-6 4 Z\" stroke-width=\"1.1\" fill=\"#fff\"/>\n  <circle cx=\"0\" cy=\"-3.5\" r=\"2.6\" fill=\"#fff\" stroke-width=\"1\"/><path d=\"M-5 -6 L0 -11 L5 -6\" stroke-width=\".7\" opacity=\".7\"/>", "stern": "<path d=\"M0 -10 L2.6 -3.2 L9.8 -3.1 L4.1 1.4 L6.1 8.4 L0 4.3 L-6.1 8.4 L-4.1 1.4 L-9.8 -3.1 L-2.6 -3.2 Z\" stroke-width=\"1.1\" fill=\"#fff\"/>\n  <path d=\"M5 6 L10 11\" stroke-width=\".8\"/>", "blatt": "<path d=\"M-7 8 Q-9 -6 6 -9 Q9 6 -7 8 Z\" stroke-width=\"1.1\" fill=\"#fff\"/><path d=\"M-7 8 L3 -4 M-3 3 L-4 -1 M0 0 L3 1\" stroke-width=\".8\"/>", "asche": "<path d=\"M-1.8 -9 h3.6 v5.5 h5.5 v3.6 h-5.5 v9 h-3.6 v-9 h-5.5 v-3.6 h5.5 Z\" fill=\"#999\" stroke-width=\"1\"/>\n  <circle cx=\"7\" cy=\"6\" r=\".8\" fill=\"#777\" stroke=\"none\"/><circle cx=\"-6\" cy=\"7\" r=\".7\" fill=\"#777\" stroke=\"none\"/>", "palme": "<path d=\"M-8 9 Q-2 0 7 -9\" stroke-width=\"1.2\"/>\n  <path d=\"M-5 4 l-5 -2 M-5 4 l1 -5 M-1 -1 l-5 -3 M-1 -1 l2 -5 M3 -5 l-4 -4 M3 -5 l4 -2 M-3 1.5 l4 2 M1 -3 l5 0\" stroke-width=\".9\"/>", "kreuz": "<path d=\"M-1.8 -10 h3.6 v6 h6 v3.6 h-6 v10.4 h-3.6 v-10.4 h-6 v-3.6 h6 Z\" fill=\"#fff\" stroke-width=\"1.1\"/>", "grab": "<path d=\"M-9 8 L-9 -1 Q-9 -8 -2 -8 Q5 -8 5 -1 L5 8 Z\" fill=\"#fff\" stroke-width=\"1.1\"/>\n  <path d=\"M-5.5 8 L-5.5 0 Q-5.5 -4.5 -2 -4.5 Q1.5 -4.5 1.5 0 L1.5 8\" stroke-width=\".9\"/>\n  <circle cx=\"7\" cy=\"4\" r=\"4\" fill=\"#fff\" stroke-width=\"1.1\"/><path d=\"M8 -6 l2 -3 M10.5 -3.5 l3 -1.5 M5 -8 l0 -3\" stroke-width=\".8\"/>", "wolke": "<path d=\"M-9 5 Q-11 0 -6 -1 Q-6 -6 0 -5 Q4 -8 7 -3 Q11 -2 9 4 Z\" fill=\"#fff\" stroke-width=\"1.1\"/>\n  <path d=\"M0 10 L0 -9 M-3 -6 L0 -10 L3 -6\" stroke-width=\"1.1\"/>", "taube": "<path d=\"M-9 1 Q-4 -2 0 0 Q3 -8 8 -9 Q5 -3 4 1 Q8 2 10 1 Q7 6 0 6 Q-5 6 -9 1 Z\" fill=\"#fff\" stroke-width=\"1.1\"/>\n  <circle cx=\"-5.5\" cy=\"1.5\" r=\".6\" fill=\"#1d1d1d\" stroke=\"none\"/>\n  <path d=\"M-2 13 q-2 -3 0 -5 q1 2 2 1 q1 2 -2 4 Z\" fill=\"#fff\" stroke-width=\".8\"/>", "aehre": "<path d=\"M0 10 L0 -9\" stroke-width=\"1.1\"/>\n  <path d=\"M0 -7 q-4 -1 -4 -4 q3 0 4 3 M0 -7 q4 -1 4 -4 q-3 0 -4 3 M0 -2 q-4 -1 -4 -4 q3 0 4 3 M0 -2 q4 -1 4 -4 q-3 0 -4 3 M0 3 q-4 -1 -4 -4 q3 0 4 3 M0 3 q4 -1 4 -4 q-3 0 -4 3\" stroke-width=\".8\" fill=\"#fff\"/>", "krone": "<path d=\"M-9 6 L-10 -6 L-5 -1 L0 -9 L5 -1 L10 -6 L9 6 Z\" fill=\"#fff\" stroke-width=\"1.1\"/>\n  <path d=\"M-9 6 L9 6 L9 9 L-9 9 Z\" fill=\"#ccc\" stroke-width=\"1\"/><circle cx=\"0\" cy=\"1\" r=\"1.3\" stroke-width=\".8\"/>"};
+const COL = {V:'#9160c0',W:'#fff4cf',R:'#de4f43',G:'#4f9f57'};
+const CN = {V:'violett',W:'weiß',R:'rot',G:'grün'};
+const INFO = {
+ 'Advent':'Wir warten und bereiten uns auf die Ankunft Jesu vor. Vier Sonntage, jede Woche brennt eine Kerze mehr.',
+ 'Weihnachten':'Gott wird Mensch: Jesus wird in Betlehem geboren (25. Dezember).',
+ 'Erscheinung des Herrn':'Die Sterndeuter finden Jesus. Er ist für alle Menschen gekommen (6. Januar).',
+ 'Zeit im Jahreskreis':'Wir hören, was Jesus gelehrt und getan hat. Der Glaube soll wachsen.',
+ 'Aschermittwoch / Fastenzeit':'40 Tage der Umkehr: Wir bereiten uns auf Ostern vor. Aschenkreuz auf der Stirn.',
+ 'Palmsonntag':'Jesus zieht in Jerusalem ein. Die Menschen jubeln ihm mit Palmzweigen zu.',
+ 'Karfreitag':'Jesus stirbt am Kreuz – aus Liebe zu uns Menschen.',
+ 'Ostern':'Jesus ist von den Toten auferstanden! Das wichtigste Fest des Kirchenjahres.',
+ 'Christi Himmelfahrt':'Jesus kehrt zu Gott, seinem Vater, zurück – 40 Tage nach Ostern.',
+ 'Pfingsten':'Der Heilige Geist kommt auf die Jünger. Geburtstag der Kirche – 50 Tage nach Ostern.',
+ 'Christkönig':'Jesus ist König der ganzen Welt. Letzter Sonntag des Kirchenjahres.'
+};
+const NS='http://www.w3.org/2000/svg';
+const pol=(r,a)=>[100+r*Math.cos(a),100+r*Math.sin(a)];
+const STEP=2*Math.PI/12, A0=-Math.PI/2, R0=15, R1=69, R2=90;
+const short=n=>n.replace('Aschermittwoch / Fastenzeit','Fastenzeit').replace('Erscheinung des Herrn','Erscheinung');
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+function segPath(i,r0=R0,r1=R1){const a=A0+i*STEP,b=a+STEP,p=[pol(r0,a),pol(r1,a),pol(r1,b),pol(r0,b)];
+ return `M${p[0]}L${p[1]}A${r1} ${r1} 0 0 1 ${p[2]}L${p[3]}A${r0} ${r0} 0 0 0 ${p[0]}Z`}
+function circle(svg,{fill=null,labels=false,hideIdx=[],grey=[],arrow=true}={}){
+ svg.innerHTML='';const g=el('g',{fill:'none',stroke:'#26221d','stroke-linecap':'round','stroke-linejoin':'round'},svg);
+ const segs=[];
+ SEG.forEach((s,i)=>{const p=el('path',{d:segPath(i),fill:fill?fill(i):'#fff',stroke:'none','data-i':i},g);segs.push(p)});
+ for(let i=0;i<12;i++){const a=A0+i*STEP,[x0,y0]=pol(R0,a),[x1,y1]=pol(R2,a);el('path',{d:`M${x0} ${y0}L${x1} ${y1}`,'stroke-width':1.3,'pointer-events':'none'},g)}
+ [R0,R1,R2].forEach(r=>el('circle',{cx:100,cy:100,r,'stroke-width':1.6,'pointer-events':'none'},g));
+ const lab=[];
+ SEG.forEach((s,i)=>{const m=A0+(i+.5)*STEP,[ix,iy]=pol((R1+R2)/2,m);
+  const ic=el('g',{transform:`translate(${ix} ${iy}) scale(.72)`,'pointer-events':'none'},g);ic.innerHTML=ICONS[s[1]];
+  const deg=m*180/Math.PI,flip=((deg%360)+360)%360>90&&((deg%360)+360)%360<270,[tx,ty]=pol((R0+R1)/2+2,m);
+  const t=el('text',{x:tx,y:ty,transform:`rotate(${deg+(flip?180:0)} ${tx} ${ty})`,'text-anchor':'middle','dominant-baseline':'middle','font-size':6.2,fill:'#26221d',stroke:'none','pointer-events':'none'},g);
+  t.textContent=short(s[0]);if(!labels||hideIdx.includes(i))t.style.display='none';if(grey.includes(i))t.setAttribute('fill','#999');lab.push(t)});
+ el('path',{d:'M98.6 92h2.8v4.6h4.4v2.8h-4.4v8.6h-2.8v-8.6h-4.4v-2.8h4.4Z',fill:'#fff','stroke-width':1},g);
+ if(arrow){const r=R2+6,[sx,sy]=pol(r,A0-.02),ea=A0+STEP*.85,[ex,ey]=pol(r,ea),an=ea+Math.PI/2;
+  el('path',{d:`M${sx} ${sy}A${r} ${r} 0 0 1 ${ex} ${ey}`,'stroke-width':1.8},g);
+  el('path',{d:`M${ex-4*Math.cos(an-.5)} ${ey-4*Math.sin(an-.5)}L${ex} ${ey}L${ex-4*Math.cos(an+.5)} ${ey-4*Math.sin(an+.5)}`,'stroke-width':1.8},g);
+  const t=el('text',{x:96,y:-4,'text-anchor':'end','font-size':8,fill:'#26221d',stroke:'none'},g);t.textContent='Start: 1. Advent'}
+ return {segs,lab}}
+const full=i=>COL[SEG[i][2]];
+
+/* ---------- stage scaling + navigation ---------- */
+const stage=document.getElementById('stage');let SC=1;
+function fit(){SC=Math.min(innerWidth/1600,innerHeight/900);stage.style.transform=`scale(${SC})`}
+addEventListener('resize',fit);fit();
+const slides=[...document.querySelectorAll('.slide')];let cur=0;
+const dots=document.getElementById('dots');slides.forEach((s,i)=>{const d=document.createElement('i');d.title=s.dataset.t;d.onclick=()=>go(i);dots.appendChild(d)});
+function go(i){cur=Math.max(0,Math.min(slides.length-1,i));slides.forEach((s,k)=>s.classList.toggle('on',k===cur));
+ [...dots.children].forEach((d,k)=>d.classList.toggle('on',k===cur));try{history.replaceState(null,'','#s'+(cur+1))}catch(e){}}
+document.getElementById('prev').onclick=()=>go(cur-1);document.getElementById('next').onclick=()=>go(cur+1);
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(cur+1)}if(['ArrowLeft','PageUp'].includes(e.key))go(cur-1)});
+document.getElementById('fs').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+const h=parseInt((location.hash.match(/^#s(\d+)$/)||[])[1]);go(h?h-1:0);
+
+/* ---------- 1 ---------- */
+circle(document.getElementById('c-title'),{fill:full,labels:true});
+
+/* ---------- 2 Quiz ---------- */
+document.querySelectorAll('#q1 .card').forEach(c=>c.onclick=()=>{if(c.dataset.ok==='1'){c.classList.add('ok');document.getElementById('q1r').classList.add('show')}else{c.classList.remove('no');void c.offsetWidth;c.classList.add('no')}});
+
+/* ---------- 3 parts ---------- */
+const PART=[0,0,0,2,1,1,1,1,1,1,2,2]; // 0 Weihnacht,1 Oster,2 Jahreskreis
+const PC=['#b996dc','#ef8b80','#8fcc93'];let ps=0;
+const cp=circle(document.getElementById('c-parts'),{fill:()=>'#fff',labels:true});
+function drawParts(){cp.segs.forEach((p,i)=>{const sh=(PART[i]===0&&ps>=0)||(PART[i]===1&&ps>=1)||(PART[i]===2&&ps>=2);p.setAttribute('fill',sh?PC[PART[i]]:'#fff')});
+ document.querySelectorAll('#c-parts').length;const st=[...slides[2].querySelectorAll('.step')];st.forEach((s,k)=>{if(k<=ps)s.classList.add('show')})}
+drawParts();
+function partsNext(){if(ps<3){ps++;drawParts()}else{ps=0;slides[2].querySelectorAll('.step.reveal').forEach(s=>s.classList.remove('show'));drawParts()}}
+document.getElementById('partsNext').onclick=partsNext;document.getElementById('c-parts').onclick=partsNext;
+
+/* ---------- generic drag (pointer events, scale aware) ---------- */
+function draggable(node,{onDrop,clone=false}){
+ node.addEventListener('pointerdown',e=>{e.preventDefault();let n=node;
+  if(clone){n=node.cloneNode(true);n.style.position='absolute';document.getElementById('stage').appendChild(n)}
+  const sr=stage.getBoundingClientRect(),nr=node.getBoundingClientRect();
+  const ox=(e.clientX-nr.left)/SC,oy=(e.clientY-nr.top)/SC;
+  const parent=clone?stage:n.offsetParent,pr=parent.getBoundingClientRect();
+  const start={l:n.style.left,t:n.style.top};
+  if(clone){n.style.left=(nr.left-sr.left)/SC+'px';n.style.top=(nr.top-sr.top)/SC+'px'}
+  n.classList.add('dragging');n.setPointerCapture&&n.setPointerCapture(e.pointerId);
+  const mv=ev=>{const P=parent.getBoundingClientRect();n.style.left=((ev.clientX-P.left)/SC-ox)+'px';n.style.top=((ev.clientY-P.top)/SC-oy)+'px'};
+  const up=ev=>{n.removeEventListener('pointermove',mv);n.removeEventListener('pointerup',up);n.removeEventListener('pointercancel',up);n.classList.remove('dragging');
+   const ok=onDrop(ev.clientX,ev.clientY,n);if(clone)n.remove();else if(!ok){n.style.left=start.l;n.style.top=start.t;n.classList.remove('no');void n.offsetWidth;n.classList.add('no')}};
+  n.addEventListener('pointermove',mv);n.addEventListener('pointerup',up);n.addEventListener('pointercancel',up)})}
+function segAt(svg,cx,cy){const r=svg.getBoundingClientRect(),x=(cx-r.left)/r.width*228-14,y=(cy-r.top)/r.height*228-14;
+ const dx=x-100,dy=y-100,d=Math.hypot(dx,dy);if(d<R0||d>R2+4)return -1;let a=Math.atan2(dy,dx)-A0;a=((a%(2*Math.PI))+2*Math.PI)%(2*Math.PI);return Math.floor(a/STEP)}
+
+/* ---------- 4 drag feasts ---------- */
+const JK=[3,10];const FEAST=[0,1,2,4,5,6,7,8,9,11];
+const svgD=document.getElementById('c-drag');let cd,placed;
+function setupDrag(){cd=circle(svgD,{fill:i=>JK.includes(i)?'#e4f1e2':'#fff',labels:true,hideIdx:FEAST,grey:JK});placed=new Set();
+ const tray=document.getElementById('tray');tray.innerHTML='';
+ const order=[...FEAST].sort(()=>Math.random()-.5);
+ order.forEach((i,k)=>{const d=document.createElement('div');d.className='drag';d.textContent=SEG[i][0].replace(' / Fastenzeit','');d.dataset.i=i;
+  d.style.left=(k%2)*380+'px';d.style.top=Math.floor(k/2)*100+'px';tray.appendChild(d);
+  draggable(d,{onDrop:(x,y,n)=>{const s=segAt(svgD,x,y);if(s===+n.dataset.i){placeOK(s,n);return true}return false}})});
+ upd4()}
+function placeOK(s,n){placed.add(s);n.remove();cd.lab[s].style.display='';cd.segs[s].setAttribute('fill','#bfe6b5');upd4()}
+function upd4(){document.getElementById('dragCount').textContent=`${placed.size} / 10 richtig`+(placed.size===10?' – super!':'')}
+setupDrag();document.getElementById('dragReset').onclick=setupDrag;
+document.getElementById('dragSolve').onclick=()=>{document.querySelectorAll('#tray .drag').forEach(n=>placeOK(+n.dataset.i,n))};
+
+/* ---------- 5 info ---------- */
+const ci=circle(document.getElementById('c-info'),{fill:full,labels:true});
+ci.segs.forEach((p,i)=>{p.style.cursor='pointer';p.onclick=()=>{ci.segs.forEach(q=>q.setAttribute('stroke','none'));p.setAttribute('stroke','#26221d');p.setAttribute('stroke-width','3');
+ document.getElementById('infoT').innerHTML=`<b>${SEG[i][0]}</b> <span style="font-size:28px;padding:2px 12px;border:2px solid #26221d;border-radius:8px;background:${full(i)}">${CN[SEG[i][2]]}</span>`;
+ document.getElementById('infoD').textContent=INFO[SEG[i][0]]}});
+
+/* ---------- 7 Kasel ---------- */
+const KAS="M40 9 Q22 11 7 21 Q1 60 13 99 Q30 116 50 118 Q70 116 87 99 Q99 60 93 21 Q78 11 60 9 Q55 17 50 17 Q45 17 40 9 Z";
+function kaselSVG(c,w=260){return `<svg viewBox="0 0 100 122" width="${w}"><g fill="none" stroke="#26221d" stroke-linejoin="round" stroke-linecap="round">
+<path d="${KAS}" fill="${c}" stroke-width="2"/><path d="M44 17.5L44 116M56 17.5L56 116" stroke-width="1.2"/>
+<path d="M44 17.5h12v98.5h-12Z" fill="#e8c55a" stroke="none" opacity=".8"/><path d="M50 56V72M43 62H57" stroke-width="1.8"/>
+<path d="${KAS}" transform="translate(.8 .6)" stroke-width=".6" opacity=".5"/></g></svg>`}
+const KD=[['V','Violett','Umkehr, Vorbereitung, Warten','Advent · Fastenzeit'],['W','Weiß','Licht, Freude, Feste Jesu','Weihnachten · Ostern · Himmelfahrt · Christkönig'],
+ ['R','Rot','Feuer des Heiligen Geistes, Blut der Märtyrer','Palmsonntag · Karfreitag · Pfingsten'],['G','Grün','Hoffnung, Wachsen','Zeit im Jahreskreis']];
+const kas=document.getElementById('kas');
+KD.forEach(([k,n,b,z])=>{const d=document.createElement('div');d.className='c';d.style.cssText='text-align:center;cursor:pointer';
+ d.innerHTML=`${kaselSVG(COL[k])}<h2 style="font-size:50px;margin:6px 0">${n}</h2><div class="sk reveal" style="padding:12px 14px"><p style="margin:0;font-size:28px"><b>${b}</b><br>${z}</p></div>`;
+ d.onclick=()=>d.querySelector('.reveal').classList.toggle('show');kas.appendChild(d)});
+
+/* ---------- 8 colours onto feasts ---------- */
+const F8=[['Weihnachten','W'],['Pfingsten','R'],['2. Advent','V'],['Ostersonntag','W'],['Karfreitag','R'],['ein Sonntag im Juli','G'],['Aschermittwoch','V'],['Christkönig','W']];
+const fc8=document.getElementById('fc8'),pal8=document.getElementById('pal8');let ok8=0;
+function setup8(){fc8.innerHTML='';ok8=0;document.getElementById('c8').textContent='0 / 8 richtig';
+ F8.forEach(([n,k])=>{const d=document.createElement('div');d.className='card sk';d.style.cssText='cursor:default;min-height:150px;display:flex;flex-direction:column;justify-content:center';d.dataset.k=k;d.innerHTML=`<b>${n}</b><span style="font-size:26px;opacity:.6">Farbe hierher ziehen</span>`;fc8.appendChild(d)})}
+['V','W','R','G'].forEach(k=>{const c=document.createElement('div');c.className='chip';c.style.background=COL[k];c.textContent=CN[k];c.style.color=k==='V'||k==='R'||k==='G'?'#fff':'#26221d';pal8.appendChild(c);
+ draggable(c,{clone:true,onDrop:(x,y)=>{const t=document.elementsFromPoint(x,y).find(e=>e.parentNode===fc8);if(!t||t.dataset.done)return true;
+  if(t.dataset.k===k){t.dataset.done=1;t.style.background=k==='W'?'#fff4cf':COL[k];t.style.color=k==='W'?'#26221d':'#fff';t.querySelector('span').textContent=CN[k]+' ✓';ok8++;document.getElementById('c8').textContent=`${ok8} / 8 richtig`+(ok8===8?' – super!':'')}
+  else{t.classList.remove('no');void t.offsetWidth;t.classList.add('no')}return true}})});
+setup8();document.getElementById('r8').onclick=setup8;
+
+/* ---------- 9 detective ---------- */
+const DET=[['V','Fall 1','Advent oder Fastenzeit','Violett = Vorbereitung und Umkehr. Wir warten auf Weihnachten oder Ostern.'],
+ ['R','Fall 2','Pfingsten, Palmsonntag oder Karfreitag','Rot = Feuer des Heiligen Geistes oder Blut / Leiden Jesu.'],
+ ['G','Fall 3','ein Sonntag im Jahreskreis','Grün = Hoffnung und Wachsen – die „normalen“ Sonntage.']];
+const det=document.getElementById('det');
+DET.forEach(([k,t,a,b])=>{const d=document.createElement('div');d.className='flip';d.style.height='560px';
+ d.innerHTML=`<div class="in"><div class="f sk"><span class="tag">${t}</span>${priestSVG(COL[k])}<p style="margin:6px 0 0;font-size:28px">tippen zum Aufdecken</p></div>
+ <div class="b sk"><h2 style="font-size:46px">${a}</h2><p style="font-size:30px">${b}</p></div></div>`;d.onclick=()=>d.classList.toggle('open');det.appendChild(d)});
+function priestSVG(c){return `<svg viewBox="0 0 120 120" width="340"><g fill="none" stroke="#26221d" stroke-linecap="round" stroke-linejoin="round">
+<path d="M37 48L27 38M83 48L93 38" stroke-width="2.4"/><circle cx="26" cy="37" r="2.8" fill="#fde3c8" stroke-width="1.2"/><circle cx="94" cy="37" r="2.8" fill="#fde3c8" stroke-width="1.2"/>
+<g transform="translate(32.5 25.5) scale(.55)"><path d="${KAS}" fill="${c}" stroke-width="2.8"/><path d="M44 17.5h12v98.5h-12Z" fill="#e8c55a" stroke="#26221d" stroke-width="1.6"/><path d="M50 56V72M43 62H57" stroke-width="2"/></g>
+<g transform="translate(60 22)"><circle r="9" fill="#fde3c8" stroke-width="1.4"/><path d="M-8 -3Q-6 -10 0 -10Q6 -10 8 -3Q5 -7 0 -7Q-5 -7 -8 -3Z" fill="#6b5640" stroke-width=".8"/>
+<circle cx="-3" r="1.1" fill="#26221d" stroke="none"/><circle cx="3" r="1.1" fill="#26221d" stroke="none"/><path d="M-3 4Q0 6.5 3 4" stroke-width="1"/></g>
+<path d="M8 88H112V116H8Z" fill="#fff" stroke-width="1.6"/><path d="M8 93H112" stroke-width="1"/><path d="M60 98V111M55 102.5H65" stroke-width="1.3"/>
+<text x="60" y="8" font-size="8" text-anchor="middle" fill="#26221d" stroke="none">?</text></g></svg>`}
+let tmr=null;document.getElementById('tim').onclick=()=>{clearInterval(tmr);let s=180;const T=document.getElementById('timT');
+ const f=()=>{T.textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;if(s--<=0){clearInterval(tmr);T.textContent='Zeit ist um!'}};f();tmr=setInterval(f,1000)};
+
+/* ---------- 10 paint ---------- */
+const cpn=circle(document.getElementById('c-paint'),{fill:()=>'#fff',labels:true});let sel='V';const painted=Array(12).fill(null);
+const pal10=document.getElementById('pal10');
+['V','W','R','G'].forEach(k=>{const c=document.createElement('div');c.className='chip'+(k===sel?' sel':'');c.style.background=COL[k];c.style.cursor='pointer';c.textContent=CN[k];c.style.color=k==='W'?'#26221d':'#fff';
+ c.onclick=()=>{sel=k;[...pal10.children].forEach(x=>x.classList.remove('sel'));c.classList.add('sel')};pal10.appendChild(c)});
+cpn.segs.forEach((p,i)=>{p.style.cursor='pointer';p.onclick=()=>{painted[i]=sel;p.setAttribute('fill',COL[sel]);p.removeAttribute('stroke');document.getElementById('msg10').textContent=''}});
+document.getElementById('chk10').onclick=()=>{let ok=0;cpn.segs.forEach((p,i)=>{const r=painted[i]===SEG[i][2];if(r)ok++;p.setAttribute('stroke',r?'none':'#d11');p.setAttribute('stroke-width',r?0:3.5)});
+ document.getElementById('msg10').innerHTML=ok===12?'<b>Alles richtig – super!</b>':`<b>${ok} von 12</b> richtig. Rot umrandete Felder noch einmal überlegen!`};
+document.getElementById('clr10').onclick=()=>{painted.fill(null);cpn.segs.forEach(p=>{p.setAttribute('fill','#fff');p.setAttribute('stroke','none')});document.getElementById('msg10').textContent=''};
+document.getElementById('sol10').onclick=()=>{cpn.segs.forEach((p,i)=>{painted[i]=SEG[i][2];p.setAttribute('fill',full(i));p.setAttribute('stroke','none')})};
+
+/* ---------- 11 ---------- */
+circle(document.getElementById('c-heft'),{fill:full,labels:true});
+
+/* ---------- 12 exit quiz ---------- */
+const EX=[['Mit welchem Fest endet das Kirchenjahr?',['Christkönig','Silvester','Pfingsten','Allerheiligen'],0],
+ ['Welche Farbe hat Pfingsten?',['grün','rot','violett','weiß'],1],
+ ['Wie viele Tage nach Ostern ist Pfingsten?',['40 Tage','7 Tage','50 Tage','100 Tage'],2],
+ ['Was bedeutet die Farbe Grün?',['Trauer','Hoffnung und Wachsen','Feuer','Umkehr'],1],
+ ['Welches Fest ist das wichtigste im Kirchenjahr?',['Weihnachten','Ostern','Advent','Erntedank'],1]];
+let ei=0,es=0,ed=false,tried=false;
+function showEx(){if(ei>=EX.length){document.getElementById('exQ').textContent=`Geschafft! ${es} von ${EX.length} richtig`;document.getElementById('exA').innerHTML='';document.getElementById('exNext').textContent='nochmal ↺';document.getElementById('exN').textContent='';return}
+ const [q,a,r]=EX[ei];ed=false;tried=false;document.getElementById('exQ').textContent=q;document.getElementById('exN').textContent=`Frage ${ei+1} / ${EX.length}`;document.getElementById('exNext').textContent='nächste Frage ▸';
+ const A=document.getElementById('exA');A.innerHTML='';a.forEach((t,k)=>{const c=document.createElement('div');c.className='card sk';c.textContent=t;
+  c.onclick=()=>{if(ed)return;if(k===r){c.classList.add('ok');if(!tried)es++;ed=true}else{tried=true;c.classList.remove('no');void c.offsetWidth;c.classList.add('no');c.style.opacity=.45}};A.appendChild(c)})}
+document.getElementById('exNext').onclick=()=>{if(ei>=EX.length){ei=0;es=0}else ei++;showEx()};showEx();
+</script></body></html>
