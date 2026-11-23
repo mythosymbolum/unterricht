@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Die Zehn Gebote – Lernweg Klasse 8</title>
+<style>
+:root{
+  --ink:#1e2833; --muted:#5b6672; --paper:#f7f3ea; --card:#fffdf8; --stone:#e9e1d1; --line:#d9cfbb;
+  --accent:#8a3b2e; --blue:#284a6b; --gold:#b38636; --ok:#2e6a4d; --okbg:#e5f1ea; --bad:#a3392a; --badbg:#f7e4df;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:18px;line-height:1.55;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+header{position:sticky;top:0;z-index:5;background:rgba(247,243,234,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);padding:10px 18px 8px}
+.top{display:flex;align-items:center;gap:14px;max-width:980px;margin:0 auto}
+.brand{font-family:var(--serif);font-size:19px;font-weight:600;white-space:nowrap}
+.brand small{display:block;font-family:var(--sans);font-size:12px;font-weight:400;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.stations{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
+.st{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 11px;font-size:13px;color:var(--muted);white-space:nowrap}
+.st.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.st.done{border-color:var(--ok);color:var(--ok)}
+.bar{max-width:980px;margin:8px auto 0;height:4px;background:var(--stone);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold);width:0;transition:width .3s}
+main{max-width:980px;margin:0 auto;padding:22px 18px 120px}
+.slide{display:none;animation:fade .25s ease}
+.slide.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.kicker{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 4px}
+h1,h2,h3{font-family:var(--serif);line-height:1.2;margin:0 0 12px}
+h1{font-size:38px}
+h2{font-size:30px}
+h3{font-size:21px;margin-top:6px}
+p{margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:0 0 16px;box-shadow:0 1px 0 rgba(0,0,0,.03)}
+.read p{font-size:19px}
+.read h3{color:var(--blue)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:720px){.two{grid-template-columns:1fr}h1{font-size:30px}h2{font-size:25px}.stations{display:none}}
+.quote{font-family:var(--serif);font-size:21px;border-left:4px solid var(--gold);padding:6px 0 6px 16px;margin:6px 0 12px}
+.quote cite{display:block;font-family:var(--sans);font-style:normal;font-size:14px;color:var(--muted);margin-top:4px}
+.bible{background:#fbf6ea;border:1px dashed var(--gold);border-radius:12px;padding:14px 16px;margin:0 0 12px;font-family:var(--serif);font-size:19px}
+.bible b{display:block;font-family:var(--sans);font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.bible sup{color:var(--muted);font-size:12px;margin-right:2px}
+.task{font-weight:600;margin-bottom:10px}
+.task .n{display:inline-block;background:var(--accent);color:#fff;border-radius:6px;padding:0 8px;margin-right:8px;font-size:14px;line-height:24px;vertical-align:2px}
+.hint{color:var(--muted);font-size:15px}
+.g{border:0;background:none;padding:0;border-bottom:2px dotted var(--blue);color:var(--blue);font-weight:600}
+textarea,input[type=text]{width:100%;font:inherit;font-size:18px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;color:var(--ink)}
+textarea:focus,input:focus,select:focus{outline:3px solid rgba(40,74,107,.25);border-color:var(--blue)}
+textarea{min-height:96px;resize:vertical}
+.btn{border:1px solid var(--blue);background:var(--blue);color:#fff;border-radius:10px;padding:9px 16px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--blue)}
+.btn:disabled{opacity:.4;cursor:default}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.model{display:none;margin-top:10px;background:#eef3f8;border-left:4px solid var(--blue);border-radius:8px;padding:10px 14px}
+.model.on{display:block}
+.model b{color:var(--blue)}
+.items{display:flex;flex-direction:column;gap:10px}
+.it{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff}
+.it .txt{margin-bottom:8px}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt{border:1px solid var(--line);background:var(--paper);border-radius:9px;padding:7px 13px;font-size:16px}
+.opt.sel{background:var(--blue);border-color:var(--blue);color:#fff}
+.it.ok{border-color:var(--ok);background:var(--okbg)}
+.it.bad{border-color:var(--bad);background:var(--badbg)}
+.ex{display:none;font-size:15px;margin-top:8px;color:var(--ink)}
+.it.ok .ex,.it.bad .ex{display:block}
+.it.ok .ex::before{content:"Richtig. ";font-weight:700;color:var(--ok)}
+.it.bad .ex::before{content:"Noch nicht. ";font-weight:700;color:var(--bad)}
+select{font:inherit;font-size:16px;border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:var(--paper)}
+.score{font-weight:600}
+.reveal{display:none;margin-top:14px}
+.reveal.on{display:block}
+table{width:100%;border-collapse:collapse;font-size:16px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--stone);font-weight:600}
+.tablets{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+.tab{width:230px;background:linear-gradient(#ece5d6,#ddd3bf);border:2px solid #b9ad94;border-radius:110px 110px 14px 14px;padding:34px 18px 18px;text-align:center;font-family:var(--serif)}
+.tab h4{margin:0 0 8px;font-size:16px;color:var(--accent);font-family:var(--sans);letter-spacing:.04em;text-transform:uppercase}
+.tab div{font-size:16px;line-height:1.5}
+.cover{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center}
+@media (max-width:720px){.cover{grid-template-columns:1fr}}
+.list{margin:0;padding-left:22px}
+.list li{margin-bottom:4px}
+.stationcard{border-left:5px solid var(--gold)}
+.ab{display:inline-block;background:#f2d46b;color:#3a3216;border:1px solid #d9b94a;border-radius:6px;padding:3px 12px;font-weight:700;font-size:15px;margin:0 0 10px;box-shadow:1px 2px 0 rgba(0,0,0,.12)}
+.pill{display:inline-block;font-size:13px;background:var(--stone);border-radius:999px;padding:2px 10px;margin-right:6px;color:var(--muted)}
+footer{position:fixed;left:0;right:0;bottom:0;background:rgba(247,243,234,.97);border-top:1px solid var(--line);padding:10px 18px calc(10px + env(safe-area-inset-bottom))}
+.nav{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.nav .count{margin:0 auto;color:var(--muted);font-size:15px}
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);max-width:560px;width:calc(100% - 36px);background:var(--ink);color:#fff;border-radius:12px;padding:12px 16px;font-size:16px;display:none;z-index:10}
+.toast.on{display:block}
+.toast b{color:#f0d79a}
+.res h3{margin-top:18px}
+.res .a{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:4px 0 10px;min-height:20px}
+.res .q{font-size:15px;color:var(--muted)}
+@media print{
+  header,footer,.toast{display:none!important}
+  .slide{display:none!important}
+  .slide.print{display:block!important}
+  .res .btns{display:none}
+  body{background:#fff;font-size:12pt}
+  main{padding:0}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div class="brand">Die Zehn Gebote<small>Lernweg · Katholische Religion · Klasse 8</small></div>
+    <nav class="stations" id="stations"></nav>
+  </div>
+  <div class="bar"><i id="bar"></i></div>
+</header>
+<main id="main"></main>
+<footer>
+  <div class="nav">
+    <button class="btn ghost" id="prev">Zurück</button>
+    <span class="count" id="count"></span>
+    <button class="btn" id="next">Weiter</button>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- Glossar ---------- */
+const GLOSS={
+  "Bundestag":"Das Parlament Deutschlands in Berlin. Die gewählten Abgeordneten beschließen dort die Gesetze.",
+  "StGB":"Strafgesetzbuch. Hier steht, welche Taten verboten sind und wie sie bestraft werden.",
+  "BGB":"Bürgerliches Gesetzbuch. Es regelt das Zusammenleben, z. B. Familie, Kaufen, Eigentum.",
+  "Grundgesetz":"Die Verfassung Deutschlands. Sie steht über allen anderen Gesetzen.",
+  "Glaubensfreiheit":"Jeder darf selbst entscheiden, ob und woran er glaubt (Artikel 4 Grundgesetz).",
+  "begehren":"Etwas unbedingt haben wollen, das einem anderen gehört.",
+  "Gewissen":"Die innere Stimme, die mir sagt, ob etwas gut oder schlecht ist.",
+  "Sünde":"Wenn ein Mensch bewusst gegen Gott handelt. Die Beziehung zu Gott und zu den Mitmenschen wird gestört.",
+  "Beichte":"Sakrament der Buße (Versöhnung): Man bekennt seine Schuld vor einem Priester und empfängt Gottes Vergebung.",
+  "Codex":"Eine Sammlung von Gesetzen.",
+  "Sinai":"Ein Berg in der Wüste. Dort gibt Gott nach der Bibel Mose die Zehn Gebote.",
+  "Exodus":"2. Buch Mose. Es erzählt vom Auszug Israels aus Ägypten.",
+  "Deuteronomium":"5. Buch Mose. Mose erinnert das Volk noch einmal an Gottes Gebote.",
+  "Tora":"Die fünf Bücher Mose. Für Juden der wichtigste Teil der Bibel.",
+  "Levitikus":"3. Buch Mose. Es enthält viele Gebote für das Leben des Volkes Israel.",
+  "Gesetzeslehrer":"Ein Fachmann, der die Tora genau kennt und auslegt.",
+  "Nächster":"Jeder Mensch, dem ich begegne und der mich gerade braucht."
+};
+const g=w=>`<button class="g" data-g="${w}">${w}</button>`;
+const gk=(w,k)=>`<button class="g" data-g="${k}">${w}</button>`;
+
+/* ---------- Folien ---------- */
+const STATIONS=["Start","1 Gesetz oder Gebot","2 Alte Welt","3 Doppelgebot","4 Zehn Gebote","5 Alltag","Abschluss"];
+const TEN=["Keine anderen Götter","Namen Gottes nicht verunehren","Tag des Herrn heiligen","Vater und Mutter ehren","Nicht töten","Nicht die Ehe brechen","Nicht stehlen","Nicht falsch aussagen","Nicht die Frau des Nächsten begehren","Nicht das Gut des Nächsten begehren"];
+const NUMOPTS=TEN.map((t,i)=>(i+1)+". "+t);
+
+const SLIDES=[
+/* ===== START ===== */
+{s:0,html:`
+<div class="cover">
+ <div>
+  <p class="kicker">Lernweg</p>
+  <h1>Die Zehn Gebote</h1>
+  <p style="font-size:21px;font-family:var(--serif)">Gebot, Gesetz und das Gebot der Liebe</p>
+  <div class="card">
+   <p class="task">Vorname oder Kürzel <span class="hint">(freiwillig)</span></p>
+   <input type="text" id="name" placeholder="z. B. Anna oder A. K." autocomplete="off">
+   <p class="hint" style="margin-top:8px">Nur für deinen Ausdruck am Ende. Deine Antworten bleiben auf diesem iPad und werden nirgendwohin gesendet. Auf einem Schul-iPad: am Ende auf „Alles löschen“ tippen.</p>
+  </div>
+ </div>
+ <svg viewBox="0 0 320 260" role="img" aria-label="Zwei Gesetzestafeln vor einem Berg">
+  <defs><linearGradient id="st" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ece5d6"/><stop offset="1" stop-color="#d6cbb4"/></linearGradient>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9dcc0"/><stop offset="1" stop-color="#f7f3ea"/></linearGradient></defs>
+  <rect width="320" height="260" rx="16" fill="url(#sky)"/>
+  <circle cx="240" cy="62" r="26" fill="#e6c983" opacity=".7"/>
+  <path d="M0 200 L70 120 L110 150 L170 70 L235 160 L270 135 L320 185 L320 260 L0 260Z" fill="#b9a988" opacity=".55"/>
+  <path d="M0 225 L90 170 L160 205 L240 175 L320 215 L320 260 L0 260Z" fill="#a08e6b" opacity=".45"/>
+  <g stroke="#9c8f74" stroke-width="2">
+   <path d="M86 230 V112 a37 37 0 0 1 74 0 V230Z" fill="url(#st)"/>
+   <path d="M166 230 V112 a37 37 0 0 1 74 0 V230Z" fill="url(#st)"/>
+  </g>
+  <g font-family="Georgia,serif" font-size="17" fill="#6b5a3e" text-anchor="middle">
+   <text x="123" y="118">I</text><text x="123" y="146">II</text><text x="123" y="174">III</text>
+   <text x="203" y="112">IV</text><text x="203" y="134">V</text><text x="203" y="156">VI</text><text x="203" y="178">VII</text><text x="203" y="200">VIII</text><text x="190" y="222">IX</text><text x="216" y="222">X</text>
+  </g>
+ </svg>
+</div>
+<div class="card">
+ <h3>So arbeitest du</h3>
+ <ul class="list">
+  <li>Du gehst allein durch fünf Stationen. Lies jeden Text genau, tippe auf <span class="g" style="cursor:default">blaue Wörter</span>, wenn du sie nicht kennst.</li>
+  <li>Bei Sortier- und Auswahlaufgaben drückst du <b>Prüfen</b> und bekommst sofort eine Rückmeldung.</li>
+  <li>Bei Schreibaufgaben schreibst du <b>zuerst selbst</b>. Danach kannst du mit der Musterlösung vergleichen und deine Antwort verbessern.</li>
+  <li>Am Ende siehst du alle deine Ergebnisse. Dann vergleichst du mit deinem Partner und wir sichern alles in der Mindmap.</li>
+ </ul>
+</div>`},
+
+{s:0,html:`
+<p class="kicker">Einstieg</p>
+<h2>Zwei Sätze – fast dasselbe?</h2>
+<div class="two">
+ <div class="card"><p class="pill">Gesetz</p><p class="quote">„Wer eine fremde Sache wegnimmt … wird mit Freiheitsstrafe bis zu fünf Jahren bestraft.“<cite>§ 242 ${g("StGB")} (Diebstahl), gekürzt</cite></p></div>
+ <div class="card"><p class="pill">Gebot</p><p class="quote">„Du sollst nicht stehlen.“<cite>7. Gebot, Ex 20,15</cite></p></div>
+</div>`,
+blocks:[{t:'write',id:'einstieg',q:'Beide Sätze verbieten dasselbe. Wo ist der Unterschied? Schreibe eine Vermutung auf.',
+ model:'Der erste Satz kommt vom Staat und droht eine Strafe an. Der zweite Satz spricht mich direkt an („Du sollst …“), nennt keine Strafe und kommt nach dem Glauben von Gott. Was genau der Unterschied ist, findest du in Station 1 heraus.'}]},
+
+/* ===== STATION 1 ===== */
+{s:1,html:`
+<p class="kicker">Station 1 · Text M1</p>
+<h2>Gesetz oder Gebot?</h2>
+<div class="card read">
+ <h3>Das Gesetz</h3>
+ <p>In Deutschland gibt es viele Gesetze. Sie werden vom Staat gemacht: Der ${g("Bundestag")} beschließt sie. Sie stehen zum Beispiel im Strafgesetzbuch (${g("StGB")}) oder im Bürgerlichen Gesetzbuch (${g("BGB")}). Gesetze gelten für alle Menschen, die hier leben – egal, ob sie an Gott glauben oder nicht.</p>
+ <p>Ein Gesetz regelt, was ein Mensch <b>tut</b>. Der Staat kann nicht in den Kopf eines Menschen schauen. Wer ein Gesetz bricht, kann von Polizei und Gericht bestraft werden: mit einer Geldstrafe oder mit Gefängnis. Gesetze können geändert werden, wenn die Mehrheit im Parlament es will. Ein Beispiel: Ehebruch war in Deutschland früher strafbar. Seit 1969 ist er es nicht mehr.</p>
+</div>
+<div class="card read">
+ <h3>Das religiöse Gebot</h3>
+ <p>Ein religiöses Gebot hat für gläubige Menschen einen anderen Ursprung: Es kommt <b>von Gott</b>. Juden und Christen glauben, dass Gott den Menschen mit seinen Geboten einen guten Weg zeigt. Ein Gebot gilt für den, der an Gott glaubt und mit ihm leben will. Niemand kann dazu gezwungen werden. Das ${g("Grundgesetz")} schützt in Artikel 4 die ${g("Glaubensfreiheit")}.</p>
+ <p>Gebote gehen tiefer als Gesetze. Sie betreffen nicht nur das, was ich tue, sondern auch das, was ich <b>denke und will</b>. Ein Gebot sagt zum Beispiel: „Du sollst nicht ${g("begehren")}, was deinem Nächsten gehört.“ Neid ist kein Verbrechen – aber er kann ein Herz vergiften.</p>
+</div>
+<div class="card read">
+ <h3>Wenn man ein Gebot bricht</h3>
+ <p>Wer ein Gebot bricht, kommt nicht ins Gefängnis. Er spürt es aber in sich selbst: im ${g("Gewissen")}. Die Bibel nennt das ${g("Sünde")}: Die Beziehung zu Gott und zu den Mitmenschen ist gestört. Der Glaube kennt dann einen Weg zurück: Reue, Versöhnung und Vergebung, zum Beispiel im Sakrament der Buße (${g("Beichte")}).</p>
+</div>
+<div class="card read">
+ <h3>Wo Gesetz und Gebot fast dasselbe sagen</h3>
+ <p>„Du sollst nicht stehlen“ und § 242 StGB (Diebstahl). „Du sollst nicht töten“ und § 212 StGB (Totschlag). Sogar das Gebot, Vater und Mutter zu ehren, findet sich im Gesetz wieder: „Eltern und Kinder sind einander Beistand und Rücksicht schuldig“ (§ 1618a BGB). Viele unserer Gesetze sind aus alten Geboten gewachsen.</p>
+</div>`},
+
+{s:1,html:`<p class="ab">Arbeitsblatt 1</p><p class="kicker">Station 1 · Aufgabe 1</p><h2>Gesetz oder Gebot? Sortiere.</h2>`,
+blocks:[{t:'items',id:'s1a1',q:'Lies jede Aussage. Gehört sie zum staatlichen Gesetz oder zum religiösen Gebot? Nutze M1.',
+ options:['Gesetz','Gebot'],
+ items:[
+  {x:'Es wird vom Bundestag beschlossen.',a:0,e:'Gesetze macht der Staat.'},
+  {x:'Es kommt nach dem Glauben von Juden und Christen von Gott.',a:1,e:'Das Gebot hat seinen Ursprung bei Gott.'},
+  {x:'Es gilt für alle, die in Deutschland leben – egal, ob sie glauben.',a:0,e:'Gesetze gelten für alle.'},
+  {x:'Es gilt für den, der mit Gott leben will. Niemand wird gezwungen.',a:1,e:'Ein Gebot nimmt man freiwillig an – Glaubensfreiheit.'},
+  {x:'Es regelt nur das, was ich tue.',a:0,e:'Der Staat kann nicht in den Kopf schauen.'},
+  {x:'Es betrifft auch meine Gedanken und Wünsche.',a:1,e:'z. B. „Du sollst nicht begehren“.'},
+  {x:'Wer es bricht, kann von Polizei und Gericht bestraft werden.',a:0,e:'Geldstrafe oder Gefängnis.'},
+  {x:'Wer es bricht, spürt es im Gewissen. Die Beziehung zu Gott ist gestört.',a:1,e:'Das nennt die Bibel Sünde.'},
+  {x:'Es kann durch eine Mehrheit im Parlament geändert werden.',a:0,e:'z. B. Ehebruch ist seit 1969 nicht mehr strafbar.'},
+  {x:'Der Weg zurück heißt Reue, Versöhnung und Vergebung.',a:1,e:'z. B. im Sakrament der Buße.'}
+ ],
+ reveal:`<div class="card"><h3>Zusammenfassung – übertrage sie auf AB 1</h3><table>
+ <tr><th>Merkmal</th><th>Staatliches Gesetz</th><th>Religiöses Gebot</th></tr>
+ <tr><td>Wer gibt es?</td><td>Staat, Bundestag</td><td>Gott (nach dem Glauben)</td></tr>
+ <tr><td>Für wen gilt es?</td><td>für alle in Deutschland</td><td>für Gläubige, freiwillig</td></tr>
+ <tr><td>Was regelt es?</td><td>nur Taten</td><td>Taten, Gedanken, Wünsche</td></tr>
+ <tr><td>Wenn man es bricht?</td><td>Strafe durch Polizei und Gericht</td><td>Gewissen, Sünde; Reue, Vergebung, Beichte</td></tr>
+ <tr><td>Änderbar?</td><td>ja, durch das Parlament</td><td>nein, gilt als Wort Gottes</td></tr></table></div>`}]},
+
+{s:1,html:`<p class="kicker">Station 1 · Aufgabe 2</p><h2>Gesetz, Gebot oder beides?</h2>`,
+blocks:[{t:'items',id:'s1a2',q:'Entscheide für jeden Satz. Lies danach die Erklärung genau.',
+ options:['Gesetz','Gebot','beides'],
+ items:[
+  {x:'Man darf niemandem sein Fahrrad wegnehmen.',a:2,e:'Beides: 7. Gebot „Du sollst nicht stehlen“ und § 242 StGB.'},
+  {x:'Du sollst nicht neidisch auf das neue Handy deines Freundes sein.',a:1,e:'Nur Gebot: Neid ist ein Gedanke. Der Staat bestraft keine Gedanken (10. Gebot).'},
+  {x:'Wer vor Gericht als Zeuge lügt, wird bestraft.',a:2,e:'Beides: 8. Gebot „nicht falsch aussagen“ – und eine Falschaussage vor Gericht ist strafbar.'},
+  {x:'Am Sonntag haben die meisten Geschäfte geschlossen.',a:[2,0],e:'Beides: 3. Gebot „Tag des Herrn heiligen“ – und die Sonntagsruhe ist auch gesetzlich geschützt.'},
+  {x:'Du sollst den Namen Gottes nicht für Flüche benutzen.',a:1,e:'Nur Gebot (2. Gebot). Der Staat schützt die Glaubensfreiheit und bestraft das Fluchen nicht.'},
+  {x:'Eltern und Kinder sollen aufeinander Rücksicht nehmen.',a:2,e:'Beides: 4. Gebot und § 1618a BGB.'}
+ ]},
+ {t:'write',id:'s1a2b',q:'Wähle einen Satz aus. Begründe in einem Satz, warum du dich so entschieden hast.',min:10,
+  model:'Beispiel: Satz 2 ist nur ein Gebot, weil Neid ein Gedanke ist. Der Staat kann nur Taten bestrafen, das Gebot fragt aber auch nach dem Herzen.'}]},
+
+{s:1,html:`<p class="kicker">Station 1 · Aufgabe 3</p><h2>Hat Tim recht?</h2>
+<div class="card"><p class="quote">„Ich habe noch nie ein Gesetz gebrochen. Also bin ich ein guter Mensch.“<cite>Tim, 14 Jahre</cite></p></div>`,
+blocks:[{t:'write',id:'tim',q:'Tim sagt: „Ich habe noch nie ein Gesetz gebrochen. Also bin ich ein guter Mensch.“ Hat Tim recht? Nimm Stellung in 3–4 Sätzen und nenne ein eigenes Beispiel.',min:60,
+  model:'Tim hat nur teilweise recht. Gesetze regeln nur das Mindeste und nur Taten. Man kann alle Gesetze halten und trotzdem lieblos, neidisch oder verlogen sein. Beispiel: Jemand grenzt einen Mitschüler aus oder lacht ihn aus – das ist nicht verboten, aber nicht gut. Gebote fragen nach dem Herzen und nach der Liebe.'},
+ {t:'write',id:'s1a4',q:'Für Schnelle: Warum bestraft der Staat niemanden, der neidisch ist oder nicht an Gott glaubt? Nenne zwei Gründe aus M1.',min:20,optional:true,
+  model:'1. Der Staat kann nicht in die Gedanken eines Menschen schauen. 2. Das Grundgesetz schützt die Glaubensfreiheit (Art. 4) – Glauben kann man nicht erzwingen.'}]},
+
+/* ===== STATION 2 ===== */
+{s:2,html:`
+<p class="kicker">Station 2 · Text M2</p>
+<h2>Gebote in der alten Welt und in Israel</h2>
+<div class="card read">
+ <h3>Babylon, um 1750 v. Chr.</h3>
+ <p>König Hammurabi lässt eine 2,25 Meter hohe Steinsäule aufstellen. Oben ist er vor dem Sonnengott Schamasch zu sehen, dem Gott der Gerechtigkeit. Darunter stehen über 280 Rechtssätze (${gk("Codex","Codex")} Hammurabi). Sie sind fast alle gleich gebaut: <b>Wenn …, dann …</b> Drei Beispiele (sinngemäß):</p>
+ <ul class="list">
+  <li>Wenn ein Mann das Auge eines freien Mannes zerstört, soll man sein Auge zerstören. (§ 196)</li>
+  <li>Wenn ein Sohn seinen Vater schlägt, soll man ihm die Hand abschneiden. (§ 195)</li>
+  <li>Wenn ein Mann einen Raub begeht und gefasst wird, soll er getötet werden. (§ 22)</li>
+ </ul>
+ <p style="margin-top:10px">Die Strafe hängt oft davon ab, wer man ist: Ein freier Bürger wird anders behandelt als ein Sklave. Der König sorgt für Ordnung, der Gott gibt dem König die Macht dazu.</p>
+</div>
+<div class="card read">
+ <h3>Ägypten</h3>
+ <p>Im ägyptischen Totenbuch muss der Verstorbene vor dem Totengericht sagen: „Ich habe nicht getötet. Ich habe nicht gestohlen. Ich habe nicht gelogen.“ Auch hier kennt man also Regeln gegen Töten, Stehlen und Lügen.</p>
+</div>
+<div class="card read">
+ <h3>Israel</h3>
+ <p>Die Bibel erzählt: Gott hat sein Volk aus der Sklaverei in Ägypten befreit. Am Berg ${g("Sinai")} gibt er Mose die Zehn Gebote, geschrieben auf zwei Steintafeln. Die Zehn Gebote stehen zweimal in der Bibel: im Buch ${g("Exodus")} (Ex 20,2–17) und im Buch ${g("Deuteronomium")} (Dtn 5,6–21). Forscher gehen davon aus, dass sie über lange Zeit gewachsen sind, bevor sie so aufgeschrieben wurden.</p>
+ <p><b>Drei Dinge sind bei Israel anders:</b></p>
+ <ol class="list">
+  <li><b>Gott selbst spricht.</b> Nicht ein König gibt die Gebote, sondern Gott. Auch der König steht unter ihnen.</li>
+  <li><b>Erst die Befreiung, dann das Gebot.</b> Die Zehn Gebote beginnen nicht mit einem Verbot, sondern mit einem Satz über Gott: Er ist der Gott, der sein Volk aus Ägypten, aus dem Sklavenhaus, herausgeführt hat (Ex 20,2). Die Gebote sollen helfen, dass das Volk in Freiheit bleibt – frei von anderen Mächten und frei von sich selbst.</li>
+  <li><b>„Du sollst …“ statt „Wenn …, dann …“.</b> Die Gebote sprechen jeden Menschen direkt an. Sie nennen meistens keine Strafe. Sie gelten für alle gleich, egal ob reich oder arm.</li>
+ </ol>
+ <p style="margin-top:10px">Im Judentum gibt es insgesamt 613 Gebote in der ${g("Tora")}. Die Zehn Gebote sind wie ihre Überschrift.</p>
+</div>`},
+
+{s:2,html:`<p class="ab">Arbeitsblatt 2</p><p class="kicker">Station 2 · Aufgabe 1</p><h2>Hammurabi oder Zehn Gebote?</h2>`,
+blocks:[{t:'items',id:'s2a1',q:'Ordne jede Aussage zu. Nutze M2.',
+ options:['Codex Hammurabi','Zehn Gebote'],
+ items:[
+  {x:'Ein König lässt die Regeln aufschreiben. Ein Gott gibt ihm die Macht dazu.',a:0,e:'König Hammurabi vor dem Sonnengott Schamasch.'},
+  {x:'Gott selbst spricht. Auch der König steht unter den Regeln.',a:1,e:'Das ist das Besondere bei Israel.'},
+  {x:'Die Sätze sind gebaut nach dem Muster „Wenn …, dann …“.',a:0,e:'z. B. „Wenn ein Mann das Auge … zerstört, soll man sein Auge zerstören.“'},
+  {x:'Die Sätze sprechen direkt an: „Du sollst …“.',a:1,e:'Jeder Mensch ist persönlich gemeint.'},
+  {x:'Harte Strafen werden genannt, z. B. Hand abschneiden oder Tod.',a:0,e:'Die Strafe steht gleich mit im Satz.'},
+  {x:'Meistens wird keine Strafe genannt.',a:1,e:'Die Gebote zeigen einen Weg, sie drohen nicht.'},
+  {x:'Freie Bürger und Sklaven werden unterschiedlich behandelt.',a:0,e:'Die Strafe hängt davon ab, wer man ist.'},
+  {x:'Die Regeln gelten für alle gleich, egal ob reich oder arm.',a:1,e:'Vor Gott sind alle gleich.'}
+ ],
+ reveal:`<div class="card"><h3>Zusammenfassung – übertrage sie auf AB 2</h3><table>
+ <tr><th></th><th>Codex Hammurabi</th><th>Zehn Gebote</th></tr>
+ <tr><td>Wer gibt die Regeln?</td><td>König Hammurabi (Macht vom Gott Schamasch)</td><td>Gott selbst; auch der König steht darunter</td></tr>
+ <tr><td>Satzbau</td><td>„Wenn …, dann …“</td><td>„Du sollst …“</td></tr>
+ <tr><td>Strafe genannt?</td><td>ja, oft sehr hart</td><td>meistens nein</td></tr>
+ <tr><td>Für alle gleich?</td><td>nein (Freie / Sklaven)</td><td>ja</td></tr></table></div>`}]},
+
+{s:2,html:`<p class="kicker">Station 2 · Aufgaben 2 und 3</p><h2>Nachdenken</h2>`,
+blocks:[{t:'write',id:'s2a2',q:'Hammurabi, die Ägypter und Israel verbieten alle das Töten und Stehlen. Warum haben so verschiedene Völker so ähnliche Regeln? Schreibe eine Vermutung in 2 Sätzen.',min:40,
+  model:'Jede Gemeinschaft braucht diese Regeln, damit Menschen sicher zusammenleben können. Ohne Schutz von Leben und Eigentum zerfällt eine Gemeinschaft. Christen sagen auch: Gott hat jedem Menschen ein Gewissen gegeben, das Gut und Böse unterscheiden kann.'},
+ {t:'html',html:`<div class="bible"><b>Ex 20,2 – der erste Satz der Zehn Gebote</b>Ich bin der HERR, dein Gott, der dich aus dem Land Ägypten geführt hat, aus dem Sklavenhaus.</div>`},
+ {t:'write',id:'s2a3',q:'Was sagt dieser Satz darüber, warum Gott Gebote gibt? Was wäre anders, wenn die Gebote ohne diesen Satz beginnen würden?',min:50,
+  model:'Gott hat zuerst gehandelt: Er hat sein Volk befreit. Die Gebote sind eine Antwort auf diese Befreiung und sollen helfen, frei zu bleiben. Ohne diesen Satz wären die Gebote nur Befehle eines Herrschers – man würde sie aus Angst halten, nicht aus Dankbarkeit.'}]},
+
+/* ===== STATION 3 ===== */
+{s:3,html:`
+<p class="kicker">Station 3 · Text M3</p>
+<h2>Das wichtigste Gebot</h2>
+<div class="bible"><b>Dtn 6,4–5 (${g("Deuteronomium")})</b>Höre, Israel! Der HERR, unser Gott, der HERR ist einzig. Darum sollst du den HERRN, deinen Gott, lieben mit ganzem Herzen, mit ganzer Seele und mit ganzer Kraft.</div>
+<div class="bible"><b>Lev 19,18 (${g("Levitikus")})</b>Du sollst den Angehörigen deines Volkes gegenüber nicht rachgierig sein und ihnen nichts nachtragen, sondern sollst deinen Nächsten lieben wie dich selbst. Ich bin der HERR.</div>
+<div class="bible"><b>Mt 22,35–40 (Matthäus-Evangelium)</b><sup>35</sup>Einer von ihnen, ein ${g("Gesetzeslehrer")}, wollte ihn versuchen und fragte ihn: <sup>36</sup>Meister, welches Gebot im Gesetz ist das wichtigste? <sup>37</sup>Er antwortete ihm: Du sollst den Herrn, deinen Gott, lieben mit ganzem Herzen, mit ganzer Seele und mit deinem ganzen Denken. <sup>38</sup>Das ist das wichtigste und erste Gebot. <sup>39</sup>Ebenso wichtig ist das zweite: Du sollst deinen ${g("Nächster").replace('>Nächster<','>Nächsten<')} lieben wie dich selbst. <sup>40</sup>An diesen beiden Geboten hängt das ganze Gesetz und die Propheten.</div>
+<div class="bible"><b>1 Joh 4,20 (Erster Johannesbrief)</b>Wenn jemand sagt: Ich liebe Gott!, aber seinen Bruder hasst, ist er ein Lügner. Denn wer seinen Bruder nicht liebt, den er sieht, kann Gott nicht lieben, den er nicht sieht.</div>
+<div class="card read"><p>Jesus erfindet kein neues Gebot. Beide Sätze stehen schon in der jüdischen Bibel. Neu ist, dass er sie <b>zusammenbindet</b>: Wer Gott liebt, muss auch den Menschen lieben – und umgekehrt. Deshalb heißt es das <b>Doppelgebot der Liebe</b>. Es ist das Hauptgebot für Juden und Christen.</p></div>`},
+
+{s:3,html:`<p class="ab">Arbeitsblatt 3</p><p class="kicker">Station 3 · Aufgabe 1</p><h2>Woher kommt das Doppelgebot?</h2>`,
+blocks:[{t:'items',id:'s3a1',q:'Wähle jeweils die richtige Antwort. Schau dafür noch einmal in M3.',
+ items:[
+  {x:'„Du sollst den Herrn, deinen Gott, lieben mit ganzem Herzen …“ steht ursprünglich in …',o:['Dtn 6,4–5','Lev 19,18','1 Joh 4,20'],a:0,e:'Das ist das „Höre, Israel“ (Sch’ma Israel), das Juden bis heute täglich beten.'},
+  {x:'„Du sollst deinen Nächsten lieben wie dich selbst“ steht ursprünglich in …',o:['Mt 22,39','Lev 19,18','Dtn 6,5'],a:1,e:'Jesus zitiert hier das Buch Levitikus.'},
+  {x:'Was ist bei Jesus neu?',o:['Er erfindet zwei neue Gebote.','Er verbindet zwei alte Gebote zu einem Doppelgebot – beide sind gleich wichtig.','Er schafft die Zehn Gebote ab.'],a:1,e:'„Ebenso wichtig ist das zweite“ – Gottesliebe und Nächstenliebe gehören zusammen.'}
+ ]}]},
+
+{s:3,html:`<p class="kicker">Station 3 · Aufgaben 2 und 3</p><h2>Drei Richtungen der Liebe</h2>`,
+blocks:[{t:'items',id:'s3a2',q:'Im Doppelgebot stecken drei Richtungen der Liebe. Wen liebe ich in jeder Richtung?',
+ options:['Gott','den Nächsten','mich selbst'],
+ items:[
+  {x:'Liebe nach oben',a:0,e:'„… den Herrn, deinen Gott, lieben“'},
+  {x:'Liebe zur Seite',a:1,e:'„… deinen Nächsten lieben …“'},
+  {x:'Liebe zu mir',a:2,e:'„… wie dich selbst“ – auch ich bin wertvoll.'}
+ ]},
+ {t:'write',id:'s3oben',q:'Ein Beispiel aus deinem Alltag für die Liebe nach oben:',min:10,rows:2,model:'z. B. beten, danken, in den Gottesdienst gehen, in der Bibel lesen.'},
+ {t:'write',id:'s3seite',q:'Ein Beispiel für die Liebe zur Seite:',min:10,rows:2,model:'z. B. helfen, zuhören, verzeihen, jemanden verteidigen, der ausgelacht wird.'},
+ {t:'write',id:'s3mich',q:'Ein Beispiel für die Liebe zu mir:',min:10,rows:2,model:'z. B. mich nicht schlechtmachen, auf meine Gesundheit achten, Nein sagen, wenn mir etwas schadet.'},
+ {t:'write',id:'s3a3',q:'Jesus sagt: „An diesen beiden Geboten hängt das ganze Gesetz.“ Erkläre das Bild vom „Hängen“ mit einem Vergleich aus dem Alltag (z. B. Kleiderhaken, Türangel, Wurzel eines Baumes).',min:40,
+  model:'Alle anderen Gebote hängen an der Liebe wie Kleider an einem Haken oder eine Tür an der Angel. Fällt der Haken weg, fällt alles herunter. Ohne die Liebe werden die Gebote zu leeren Regeln.'}]},
+
+{s:3,html:`<p class="kicker">Station 3 · Aufgabe 4</p><h2>Zwei Tafeln – zwei Beziehungen</h2>`,
+blocks:[{t:'items',id:'s3a4',q:'Gehört das Gebot zur Liebe zu Gott oder zur Liebe zum Nächsten?',
+ options:['Liebe zu Gott','Liebe zum Nächsten'],
+ items:TEN.map((t,i)=>({x:(i+1)+'. '+t,a:i<3?0:1,e:i<3?'Es geht um die Beziehung zu Gott.':'Es geht um die Beziehung zu anderen Menschen.'})),
+ reveal:`<div class="tablets"><div class="tab"><h4>Liebe zu Gott</h4><div>1 Keine anderen Götter<br>2 Gottes Namen ehren<br>3 Tag des Herrn heiligen</div></div><div class="tab"><h4>Liebe zum Nächsten</h4><div>4 Eltern ehren · 5 nicht töten<br>6 nicht die Ehe brechen<br>7 nicht stehlen · 8 nicht lügen<br>9 und 10 nicht begehren</div></div></div>`}]},
+
+{s:3,html:`<p class="kicker">Station 3 · Aufgabe 5</p><h2>Was sagt Lena?</h2>
+<div class="card"><p class="quote">„Ich bete jeden Abend. Aber mit meiner Nachbarin rede ich kein Wort, die nervt.“<cite>Lena</cite></p></div>`,
+blocks:[{t:'write',id:'lena',q:'Lena betet jeden Abend, redet aber mit ihrer Nachbarin kein Wort. Was würde der erste Johannesbrief (1 Joh 4,20) dazu sagen? Antworte in 2 Sätzen.',min:40,
+ model:'Wer sagt, dass er Gott liebt, aber den Menschen neben sich hasst oder ignoriert, ist nach 1 Joh 4,20 ein Lügner. Gottesliebe zeigt sich in der Nächstenliebe – Lena sollte auf ihre Nachbarin zugehen.'},
+ {t:'write',id:'experte',q:'Fasse Station 2 und 3 in drei Sätzen zusammen: Was ist das Besondere an den Zehn Geboten, und wie teilt das Doppelgebot sie in zwei Gruppen?',min:60,
+ model:'1. Bei Israel gibt Gott selbst die Gebote, und zwar nach der Befreiung aus Ägypten. 2. Das Doppelgebot der Liebe heißt: Gott lieben und den Nächsten lieben wie sich selbst. 3. Die Gebote 1–3 regeln die Beziehung zu Gott, die Gebote 4–10 die Beziehung zu den Mitmenschen.'}]},
+
+/* ===== STATION 4 ===== */
+{s:4,html:`
+<p class="kicker">Station 4 · Text M4</p>
+<h2>Die Zehn Gebote</h2>
+<div class="card read">
+ <p class="hint">Katechismusform, nach Ex 20,2–17</p>
+ <p style="font-family:var(--serif);font-size:21px"><b>Ich bin der Herr, dein Gott.</b></p>
+ <ol class="list" style="font-family:var(--serif);font-size:20px">
+  <li>Du sollst keine anderen Götter neben mir haben.</li>
+  <li>Du sollst den Namen Gottes nicht verunehren.</li>
+  <li>Du sollst den Tag des Herrn heiligen.</li>
+  <li>Du sollst Vater und Mutter ehren.</li>
+  <li>Du sollst nicht töten.</li>
+  <li>Du sollst nicht die Ehe brechen.</li>
+  <li>Du sollst nicht stehlen.</li>
+  <li>Du sollst nicht falsch gegen deinen Nächsten aussagen.</li>
+  <li>Du sollst nicht die Frau deines Nächsten begehren.</li>
+  <li>Du sollst nicht das Gut deines Nächsten begehren.</li>
+ </ol>
+</div>
+<div class="card"><p><b>Hinweis:</b> So zählen die katholische und die lutherische Kirche. Orthodoxe und reformierte Christen zählen das Bilderverbot als eigenes zweites Gebot und fassen die beiden Begehren-Gebote zu einem zusammen. Der Inhalt ist derselbe.</p>
+<p class="hint" style="margin:0">Den vollständigen Bibeltext findest du in Ex 20,2–17 und Dtn 5,6–21.</p></div>`},
+
+{s:4,html:`<p class="ab">Arbeitsblatt 4</p><p class="kicker">Station 4 · Aufgabe 1</p><h2>Die Gebote in einfachen Worten</h2>`,
+blocks:[{t:'items',id:'s4a1',mode:'select',q:'Ein Schüler hat die Gebote für ein Kind der 5. Klasse erklärt. Welches Gebot meint er jeweils? Wähle die Nummer.',
+ options:NUMOPTS,
+ items:[
+  {x:'Sei nicht neidisch auf das, was andere haben.',a:9,e:'10. Gebot: nicht das Gut des Nächsten begehren.'},
+  {x:'Nimm dir am Sonntag Zeit für Gott, für Ruhe und für deine Familie.',a:2,e:'3. Gebot: den Tag des Herrn heiligen.'},
+  {x:'Lüge nicht über andere und verbreite keine Gerüchte.',a:7,e:'8. Gebot: nicht falsch aussagen.'},
+  {x:'Nichts darf dir wichtiger sein als Gott – kein Geld, kein Star, kein Handy.',a:0,e:'1. Gebot: keine anderen Götter.'},
+  {x:'Schütze das Leben – deins und das von anderen.',a:4,e:'5. Gebot: nicht töten.'},
+  {x:'Achte deine Eltern und sorge für sie, auch wenn sie alt sind.',a:3,e:'4. Gebot: Vater und Mutter ehren.'},
+  {x:'Nimm nichts, was dir nicht gehört.',a:6,e:'7. Gebot: nicht stehlen.'},
+  {x:'Sprich Gottes Namen mit Respekt aus und benutze ihn nicht zum Fluchen.',a:1,e:'2. Gebot: den Namen Gottes nicht verunehren.'},
+  {x:'Sei deinem Ehepartner treu.',a:5,e:'6. Gebot: nicht die Ehe brechen.'},
+  {x:'Mach die Ehe oder Beziehung anderer nicht kaputt – auch nicht in Gedanken.',a:8,e:'9. Gebot: nicht die Frau des Nächsten begehren.'}
+ ]},
+ {t:'write',id:'s4eigen',q:'Jetzt du: Schreibe drei Gebote in deinen eigenen Worten – anders als oben. Nenne jeweils die Nummer.',min:50,rows:4,
+ model:'z. B. 2: „Ich benutze Gottes Namen nicht zum Fluchen.“ · 8: „Ich erzähle nichts Falsches über andere.“ · 10: „Ich gönne anderen, was sie haben.“ Jede Umschreibung, die den Sinn trifft, ist richtig.'}]},
+
+{s:4,html:`<p class="kicker">Station 4 · Aufgaben 2 und 3</p><h2>Eine Welt ohne Gebote?</h2>`,
+blocks:[{t:'write',id:'s4a2',q:'Wähle zwei Gebote aus. Beschreibe in je einem Satz, wie die Welt aussehen würde, wenn sich niemand mehr daran hält.',min:50,
+ model:'z. B. Ohne das 8. Gebot könnte niemand mehr einem anderen glauben – jedes Wort könnte gelogen sein. Ohne das 5. Gebot wäre niemand mehr sicher, auch nicht auf dem Schulweg.'},
+ {t:'write',id:'s4a3',q:'Welches Gebot ist deiner Meinung nach für junge Menschen heute am schwersten zu halten? Begründe in 2–3 Sätzen.',min:50,
+ model:'Hier gibt es keine einzige richtige Lösung. Wichtig ist deine Begründung: Warum ist gerade dieses Gebot schwer? Nenne eine konkrete Situation aus dem Leben junger Menschen.'}]},
+
+/* ===== STATION 5 ===== */
+{s:5,html:`<p class="ab">Arbeitsblatt 5</p><p class="kicker">Station 5 · Aufgabe 1</p><h2>Die Zehn Gebote im Alltag</h2>`,
+blocks:[{t:'items',id:'s5a1',mode:'select',q:'Lies die sechs Fälle. Welches Gebot ist betroffen? Manchmal passen auch zwei – wähle das, das am besten passt.',
+ options:NUMOPTS,
+ items:[
+  {x:'<b>Fall 1.</b> In der Klassengruppe kursiert ein peinliches Foto einer Mitschülerin. Einige leiten es weiter.',a:[7,4],e:'Vor allem das 8. Gebot: Der gute Ruf eines Menschen wird zerstört. Es verletzt auch die Nächstenliebe. Richtig wäre: nicht weiterleiten, löschen, die Mitschülerin schützen.'},
+  {x:'<b>Fall 2.</b> Max schreibt bei der Probe heimlich vom Nachbarn ab.',a:[6,7],e:'7. Gebot (er nimmt sich fremde Leistung) oder 8. Gebot (er täuscht). Richtig wäre: selbst lernen und ehrlich bleiben.'},
+  {x:'<b>Fall 3.</b> Lena erzählt überall, eine Lehrerin habe getrunken – obwohl das gar nicht stimmt.',a:[7],e:'8. Gebot: falsch gegen den Nächsten aussagen, ein Gerücht verbreiten. Richtig wäre: nichts Unwahres erzählen und das Gerücht richtigstellen.'},
+  {x:'<b>Fall 4.</b> Tim nimmt ohne zu fragen das Ladekabel seines Bruders und gibt es wochenlang nicht zurück.',a:[6],e:'7. Gebot: nicht stehlen. Richtig wäre: fragen, zurückgeben, das Eigentum des anderen achten.'},
+  {x:'<b>Fall 5.</b> Jonas macht sich vor der Klasse über den Glauben eines Mitschülers lustig.',a:[1,0],e:'2. Gebot: Was anderen heilig ist, wird verspottet – und es fehlt der Respekt vor dem Nächsten. Richtig wäre: den Glauben anderer respektieren und sich entschuldigen.'},
+  {x:'<b>Fall 6.</b> Sarah hat sonntags nie mehr Zeit für ihre Familie, weil sie nur noch am Handy ist.',a:[2,3],e:'3. Gebot: Der Sonntag ist ein Tag für Gott, Ruhe und Beziehung (auch das 4. Gebot passt). Richtig wäre: bewusst Zeit für die Familie nehmen, das Handy weglegen.'}
+ ]}]},
+
+{s:5,html:`<p class="kicker">Station 5 · Aufgaben 2 und 3</p><h2>Wiedergutmachen</h2>`,
+blocks:[{t:'write',id:'s5a2',q:'Suche dir einen Fall aus (Nummer angeben). Was wäre richtig – und warum? Wie könnte die Person das Problem wiedergutmachen? Nutze das Doppelgebot der Liebe.',min:60,rows:5,
+ model:'Beispiel Fall 3: Lena verstößt gegen das 8. Gebot, weil sie etwas Falsches über die Lehrerin erzählt und ihren Ruf zerstört. Wer den Nächsten liebt wie sich selbst, will auch selbst nicht, dass über ihn gelogen wird. Wiedergutmachen: Lena sagt allen, dass es nicht stimmt, und entschuldigt sich bei der Lehrerin.'},
+ {t:'write',id:'s5a3',q:'Für Schnelle: Erfinde einen kurzen Fall aus deinem Schulalltag, der zu einem der Gebote passt. Schreibe darunter, welches Gebot gemeint ist.',min:30,optional:true,
+ model:'Dein Fall ist individuell. Prüfe: Ist die Situation klar beschrieben? Passt die Nummer des Gebots wirklich?'}]},
+
+/* ===== ABSCHLUSS ===== */
+{s:6,html:`<p class="kicker">Abschluss</p><h2>Teste dich selbst</h2>`,
+blocks:[{t:'items',id:'quiz',q:'Wähle jeweils die richtige Antwort und drücke dann auf Prüfen.',
+ items:[
+  {x:'1. Wer beschließt in Deutschland die Gesetze?',o:['die Kirche','der Bundestag','der Bürgermeister'],a:1,e:'Das Parlament – der Bundestag.'},
+  {x:'2. Welches Gebot kann der Staat nicht bestrafen?',o:['Du sollst nicht töten.','Du sollst nicht stehlen.','Du sollst nicht das Gut deines Nächsten begehren.'],a:2,e:'Begehren ist ein Wunsch im Kopf. Der Staat kann nur Taten bestrafen.'},
+  {x:'3. Wie nennt der Glaube es, wenn jemand ein Gebot Gottes bricht?',o:['Straftat','Sünde','Ordnungswidrigkeit'],a:1,e:'Sünde. Der Weg zurück: Reue, Vergebung, Versöhnung, Beichte.'},
+  {x:'4. Wann und wo entstand der Codex Hammurabi?',o:['um 1750 v. Chr. in Babylon','um 30 n. Chr. in Jerusalem','um 1500 n. Chr. in Rom'],a:0,e:'Um 1750 v. Chr. in Babylon.'},
+  {x:'5. Wie sprechen die Zehn Gebote den Menschen an?',o:['„Wenn …, dann …“','„Du sollst …“','„Es ist verboten …“'],a:1,e:'Direkte Anrede: „Du sollst …“'},
+  {x:'6. Womit beginnen die Zehn Gebote?',o:['mit einer Strafe','mit dem Verbot zu töten','mit einem Satz über Gott, der sein Volk aus der Sklaverei befreit hat'],a:2,e:'Erst die Befreiung, dann das Gebot (Ex 20,2).'},
+  {x:'7. In welchen zwei Büchern der Bibel stehen die Zehn Gebote?',o:['Genesis und Psalmen','Exodus und Deuteronomium','Matthäus und Lukas'],a:1,e:'Ex 20,2–17 und Dtn 5,6–21.'},
+  {x:'8. Wie lautet das Doppelgebot der Liebe?',o:['Gott fürchten und den Eltern gehorchen','Gott lieben und den Nächsten lieben wie dich selbst','Beten und fasten'],a:1,e:'Mt 22,37–39.'},
+  {x:'9. Welche Gebote regeln die Beziehung zu Gott?',o:['1–3','4–10','1–5'],a:0,e:'1–3 Gott, 4–10 der Nächste.'}
+ ]},
+ {t:'write',id:'mitnehmen',q:'Was nehme ich aus dieser Stunde mit? Ein Satz.',min:15,rows:2,model:'z. B. Gebote sind keine Strafgesetze, sondern ein Weg, den Gott mir zeigt – und alles hängt an der Liebe zu Gott und zum Nächsten.'}]},
+
+{s:6,res:true}
+];
+
+/* ---------- Zustand ---------- */
+const KEY='zehngebote-kl8-v1';
+let S={name:'',w:{},c:{},sc:{},i:0};
+try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+/* ---------- Rendern ---------- */
+const main=document.getElementById('main');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const okA=(a,v)=>Array.isArray(a)?a.includes(v):a===v;
+
+function renderWrite(b){
+  const v=S.w[b.id]||'';const min=b.min||20;
+  return `<div class="card" data-write="${b.id}">
+   <p class="task">${b.optional?'<span class="n" style="background:var(--gold)">Zusatz</span>':''}${b.q}</p>
+   <textarea rows="${b.rows||3}" data-id="${b.id}" placeholder="Schreibe hier …">${esc(v)}</textarea>
+   ${b.model?`<div class="row"><button class="btn ghost" data-model="${b.id}" ${v.trim().length<min?'disabled':''}>Mit Musterlösung vergleichen</button><span class="hint" data-mh="${b.id}">${v.trim().length<min?'Schreibe zuerst selbst eine Antwort.':''}</span></div>
+   <div class="model" id="m-${b.id}"><b>So könnte eine gute Antwort aussehen:</b><br>${b.model}<br><span class="hint">Fehlt dir etwas? Ergänze deine Antwort oben.</span></div>`:''}
+  </div>`;
+}
+function renderItems(b){
+  const sel=S.c[b.id]||{};
+  let h=`<div class="card" data-items="${b.id}"><p class="task">${b.q}</p><div class="items">`;
+  b.items.forEach((it,k)=>{
+    const opts=it.o||b.options;const cur=sel[k];
+    let ctrl;
+    if(b.mode==='select'){
+      ctrl=`<select data-b="${b.id}" data-k="${k}"><option value="">– Gebot wählen –</option>${opts.map((o,j)=>`<option value="${j}" ${cur===j?'selected':''}>${o}</option>`).join('')}</select>`;
+    }else{
+      ctrl=`<div class="opts">${opts.map((o,j)=>`<button class="opt ${cur===j?'sel':''}" data-b="${b.id}" data-k="${k}" data-j="${j}">${o}</button>`).join('')}</div>`;
+    }
+    h+=`<div class="it" id="it-${b.id}-${k}"><div class="txt">${it.x}</div>${ctrl}<div class="ex">${it.e||''}</div></div>`;
+  });
+  h+=`</div><div class="row"><button class="btn" data-check="${b.id}">Prüfen</button><span class="score" id="sc-${b.id}"></span></div>
+   ${b.reveal?`<div class="reveal" id="rv-${b.id}">${b.reveal}</div>`:''}</div>`;
+  return h;
+}
+function build(){
+  main.innerHTML=SLIDES.map((sl,i)=>{
+    if(sl.res) return `<section class="slide res" id="sl-${i}" data-i="${i}"></section>`;
+    let h=sl.html||'';
+    (sl.blocks||[]).forEach(b=>{h+=b.t==='write'?renderWrite(b):b.t==='items'?renderItems(b):b.html;});
+    return `<section class="slide" id="sl-${i}" data-i="${i}">${h}</section>`;
+  }).join('');
+  const n=document.getElementById('name');if(n){n.value=S.name||'';n.addEventListener('input',()=>{S.name=n.value;save();});}
+  // gespeicherte Prüfungen wiederherstellen
+  allItemBlocks().forEach(b=>{if(S.sc[b.id])check(b.id,true);});
+}
+function allItemBlocks(){const r=[];SLIDES.forEach(s=>(s.blocks||[]).forEach(b=>{if(b.t==='items')r.push(b);}));return r;}
+function allWrites(){const r=[];SLIDES.forEach(s=>(s.blocks||[]).forEach(b=>{if(b.t==='write')r.push({b,s:s.s});}));return r;}
+function blockById(id){for(const s of SLIDES)for(const b of (s.blocks||[]))if(b.id===id)return b;}
+
+function check(id,silent){
+  const b=blockById(id);const sel=S.c[id]||{};let ok=0;
+  b.items.forEach((it,k)=>{
+    const el=document.getElementById(`it-${id}-${k}`);el.classList.remove('ok','bad');
+    if(sel[k]===undefined) return;
+    if(okA(it.a,sel[k])){ok++;el.classList.add('ok');}else el.classList.add('bad');
+  });
+  const answered=Object.keys(sel).length;
+  S.sc[id]=[ok,b.items.length];save();
+  const sc=document.getElementById('sc-'+id);
+  sc.textContent=`${ok} von ${b.items.length} richtig`+(answered<b.items.length?` · ${b.items.length-answered} noch offen`:'')+(ok===b.items.length?' – sehr gut!':(answered===b.items.length?' · Ändere die roten und prüfe noch einmal.':''));
+  sc.style.color=ok===b.items.length?'var(--ok)':'var(--ink)';
+  const rv=document.getElementById('rv-'+id);if(rv&&answered===b.items.length) rv.classList.add('on');
+  updateStations();
+}
+
+/* ---------- Ergebnisse ---------- */
+function renderResults(){
+  const el=document.querySelector('.slide.res');
+  let tot=0,max=0;
+  let h=`<p class="kicker">Abschluss</p><h2>Meine Ergebnisse</h2>
+  <div class="card"><p><b>Name:</b> ${esc(S.name||'________________')} &nbsp; · &nbsp; <b>Datum:</b> ${new Date().toLocaleDateString('de-DE')}</p>
+  <table><tr><th>Aufgabe</th><th>richtig</th></tr>`;
+  const names={s1a1:'Station 1 · Gesetz oder Gebot – sortieren',s1a2:'Station 1 · Gesetz, Gebot oder beides',s2a1:'Station 2 · Hammurabi oder Zehn Gebote',s3a1:'Station 3 · Woher kommt das Doppelgebot',s3a2:'Station 3 · Drei Richtungen der Liebe',s3a4:'Station 3 · Zwei Tafeln',s4a1:'Station 4 · Gebote in einfachen Worten',s5a1:'Station 5 · Fälle aus dem Alltag',quiz:'Abschluss · Selbsttest'};
+  allItemBlocks().forEach(b=>{const s=S.sc[b.id];tot+=s?s[0]:0;max+=b.items.length;
+    h+=`<tr><td>${names[b.id]||b.id}</td><td>${s?s[0]+' / '+s[1]:'noch nicht geprüft'}</td></tr>`;});
+  h+=`<tr><th>Gesamt</th><th>${tot} / ${max}</th></tr></table></div>
+  <div class="card"><h3 style="margin-top:0">Partnervergleich</h3>
+  <ol class="list"><li>Setzt euch zu zweit zusammen. Vergleicht eure Antworten zu <b>Tim</b>, <b>Lena</b> und eurem <b>Fall aus Station 5</b>.</li>
+  <li>Markiert auf dem Arbeitsblatt, was ihr vom Partner übernehmen wollt.</li>
+  <li>Einigt euch auf einen Satz: <i>Ein Gebot ist mehr als ein Gesetz, weil …</i> – den bringt ihr für die Mindmap mit.</li></ol></div>
+  <div class="card"><h3 style="margin-top:0">Meine Antworten</h3>`;
+  let last=-1;
+  allWrites().forEach(({b,s})=>{
+    if(s!==last){h+=`<h3>${s===0?'Einstieg':STATIONS[s]}</h3>`;last=s;}
+    h+=`<div class="q">${b.q}</div><div class="a">${esc(S.w[b.id]||'')}</div>`;
+  });
+  h+=`</div><div class="row btns"><button class="btn" id="print">Drucken / als PDF sichern</button><button class="btn ghost" id="copy">Antworten kopieren</button><button class="btn ghost" id="reset">Alles löschen und neu beginnen</button></div>`;
+  el.innerHTML=h;
+  document.getElementById('print').onclick=()=>{el.classList.add('print');try{window.print();}catch(e){}setTimeout(()=>el.classList.remove('print'),500);};
+  document.getElementById('copy').onclick=()=>{
+    let t=`Die Zehn Gebote – ${S.name||''}\n\n`;allWrites().forEach(({b})=>{t+=b.q.replace(/<[^>]+>/g,'')+'\n'+(S.w[b.id]||'—')+'\n\n';});
+    t+=`Punkte: ${tot}/${max}`;
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('Kopiert. Du kannst die Antworten jetzt einfügen.')).catch(()=>toast('Kopieren hat nicht geklappt – nutze „Drucken / als PDF“.'));
+  };
+  const r=document.getElementById('reset');let armed=false;
+  r.onclick=()=>{if(!armed){armed=true;r.textContent='Wirklich alles löschen? Noch einmal tippen.';setTimeout(()=>{armed=false;r.textContent='Alles löschen und neu beginnen';},4000);return;}
+    S={name:'',w:{},c:{},sc:{},i:0};save();build();go(0);};
+}
+
+/* ---------- Navigation ---------- */
+function updateStations(){
+  const cur=SLIDES[S.i].s;
+  document.getElementById('stations').innerHTML=STATIONS.map((t,k)=>{
+    const first=SLIDES.findIndex(s=>s.s===k);
+    const blocks=SLIDES.filter(s=>s.s===k).flatMap(s=>s.blocks||[]).filter(b=>b.t==='items');
+    const done=blocks.length&&blocks.every(b=>S.sc[b.id]);
+    return `<button class="st ${k===cur?'on':''} ${done&&k!==cur?'done':''}" data-go="${first}">${t}</button>`;}).join('');
+}
+function go(i){
+  S.i=Math.max(0,Math.min(SLIDES.length-1,i));save();
+  document.querySelectorAll('.slide').forEach(s=>s.classList.toggle('on',+s.dataset.i===S.i));
+  if(SLIDES[S.i].res) renderResults();
+  document.getElementById('prev').disabled=S.i===0;
+  const nx=document.getElementById('next');nx.textContent=S.i===SLIDES.length-2?'Zu meinen Ergebnissen':(S.i===SLIDES.length-1?'Fertig':'Weiter');nx.disabled=S.i===SLIDES.length-1;
+  document.getElementById('count').textContent=`${S.i+1} / ${SLIDES.length}`;
+  document.getElementById('bar').style.width=(S.i/(SLIDES.length-1)*100)+'%';
+  updateStations();window.scrollTo({top:0,behavior:'instant'in window?'instant':'auto'});
+}
+let tt;function toast(html){const t=document.getElementById('toast');t.innerHTML=html;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),6000);}
+
+/* ---------- Ereignisse ---------- */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.g){toast(`<b>${t.dataset.g}:</b> ${GLOSS[t.dataset.g]||''}`);return;}
+  if(t.dataset.go!==undefined){go(+t.dataset.go);return;}
+  if(t.dataset.j!==undefined){const id=t.dataset.b,k=+t.dataset.k,j=+t.dataset.j;S.c[id]=S.c[id]||{};S.c[id][k]=j;save();
+    t.parentNode.querySelectorAll('.opt').forEach(o=>o.classList.toggle('sel',o===t));document.getElementById(`it-${id}-${k}`).classList.remove('ok','bad');return;}
+  if(t.dataset.check){check(t.dataset.check);return;}
+  if(t.dataset.model){document.getElementById('m-'+t.dataset.model).classList.toggle('on');return;}
+});
+document.addEventListener('change',e=>{const s=e.target;if(s.tagName==='SELECT'&&s.dataset.b){const id=s.dataset.b,k=+s.dataset.k;S.c[id]=S.c[id]||{};
+  if(s.value==='')delete S.c[id][k];else S.c[id][k]=+s.value;save();document.getElementById(`it-${id}-${k}`).classList.remove('ok','bad');}});
+document.addEventListener('input',e=>{const a=e.target;if(a.tagName==='TEXTAREA'&&a.dataset.id){const id=a.dataset.id;S.w[id]=a.value;save();
+  const b=blockById(id),btn=document.querySelector(`[data-model="${id}"]`),mh=document.querySelector(`[data-mh="${id}"]`);
+  if(btn){const ok=a.value.trim().length>=(b.min||20);btn.disabled=!ok;mh.textContent=ok?'':'Schreibe zuerst selbst eine Antwort.';}}});
+document.getElementById('prev').onclick=()=>go(S.i-1);
+document.getElementById('next').onclick=()=>{
+  go(S.i+1);};
+
+build();go(S.i||0);
+</script>
+</body>
+</html>
