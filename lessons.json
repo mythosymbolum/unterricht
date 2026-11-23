@@ -1,5 +1,6 @@
 [
   {"path": "gams/kl6-kirche/", "schule": "GAMS", "klasse": "6", "titel": "Kirche – mehr als ein Haus", "untertitel": "Gebäude, Gegenstände, Gemeinschaft, Dienste", "icon": "kirchturm"},
   {"path": "gams/kl6-kirchenjahr/", "schule": "GAMS", "klasse": "6", "titel": "Das Kirchenjahr", "untertitel": "Feste im Kreis und liturgische Farben", "icon": "osterkerze"},
-  {"path": "gams/kl8-zehn-gebote/", "schule": "GAMS", "klasse": "8", "titel": "Die Zehn Gebote", "untertitel": "Gebot, Gesetz und das Gebot der Liebe", "icon": "lektionar"}
+  {"path": "gams/kl8-zehn-gebote/", "schule": "GAMS", "klasse": "8", "titel": "Die Zehn Gebote", "untertitel": "Gebot, Gesetz und das Gebot der Liebe", "icon": "lektionar"},
+  {"path": "gams/kl10-zwei-fenster/", "schule": "GAMS", "klasse": "10", "titel": "Zwei Fenster zur Wirklichkeit", "untertitel": "Urknall, Evolution und Genesis 1 – Glaube und Vernunft", "icon": "lektionar"}
 ]

@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>KR 10 · Zwei Fenster zur Wirklichkeit – Lernpfad</title>
+<style>
+:root{--paper:#f5f2eb;--card:#fffdf9;--ink:#1f2a37;--mute:#5d6673;--line:#ddd6c8;--sci:#2e5b78;--scil:#e7eff4;--faith:#9a6a22;--faithl:#f6eedf;--good:#2f7a4f;--goodl:#e4f2e9;--bad:#b3412f;--badl:#f8e5e1;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:18px/1.55 var(--sans)}
+header{position:sticky;top:0;z-index:5;background:rgba(245,242,235,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.hd{max-width:880px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px}
+.logo{width:34px;height:34px;flex:none}
+.ttl{font:600 15px/1.2 var(--sans);letter-spacing:.02em}
+.ttl small{display:block;font-weight:400;color:var(--mute)}
+#who{margin-left:auto;font-size:15px;color:var(--mute)}
+#bar{height:4px;background:var(--line)}#bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--sci),var(--faith));transition:width .4s}
+main{max-width:880px;margin:0 auto;padding:22px 16px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px 28px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.kicker{font:600 13px/1 var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--mute)}
+h2{font:600 31px/1.2 var(--serif);margin:8px 0 16px}
+h3{font:600 20px/1.3 var(--serif);margin:0 0 8px}
+h3.mt{margin-top:20px}
+.lead{font-size:20px}
+.claim{margin:8px 0 16px;padding:18px 22px;border-left:5px solid var(--faith);background:var(--faithl);font:italic 22px/1.4 var(--serif);border-radius:0 10px 10px 0}
+.src{border-radius:12px;padding:18px 22px;margin:6px 0 18px;border:1px solid var(--line)}
+.src.sci{background:var(--scil);border-color:#c9dbe6}.src.faith{background:var(--faithl);border-color:#eadbbf}.src.both{background:#f3f1ec}
+.src p{margin:0 0 10px}
+.srcnote{font-size:14px;color:var(--mute);margin-top:6px!important}
+.verse{font:italic 19px/1.45 var(--serif)}.verse span{font:14px var(--sans);color:var(--mute);font-style:normal}
+table.days{width:100%;border-collapse:collapse;margin:8px 0 12px;font-size:16px;background:#fffdf8}
+.days th,.days td{border:1px solid #e3d4b6;padding:7px 10px;text-align:left;vertical-align:top}
+.days th{background:#efe2c8;font-weight:600}.days .sabbat{background:#f3e7cf;text-align:center}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0 12px}
+.w{border-radius:10px;padding:12px 14px;font-size:16px;line-height:1.5}
+.w.sci{background:var(--scil);border-top:4px solid var(--sci)}.w.faith{background:var(--faithl);border-top:4px solid var(--faith)}
+.task{border-top:1px solid var(--line);padding:18px 0 6px}
+.task.opt{background:#faf8f3;border:1px dashed var(--line);border-radius:12px;padding:16px;margin-top:12px}
+.q{font-weight:600;margin-bottom:10px}
+.num{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;font-size:14px;margin-right:10px;vertical-align:1px}
+.plus{display:inline-block;background:var(--faith);color:#fff;font-size:12px;padding:2px 8px;border-radius:20px;margin-right:6px;text-transform:uppercase;letter-spacing:.05em}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.btn{min-height:48px;padding:10px 20px;border-radius:10px;border:1px solid var(--ink);background:#fff;font-weight:600}
+.btn.primary{background:var(--ink);color:#fff}.btn.ghost{border-color:var(--line);background:#fff}
+.btn.small{min-height:42px;padding:8px 16px;font-size:16px}
+.btn:disabled{opacity:.35;cursor:default}
+.opt{min-height:46px;padding:9px 14px;border:1.5px solid var(--line);background:#fff;border-radius:10px;text-align:left;font-size:17px}
+.opt.sel{border-color:var(--ink);background:#eef0f3;box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.block{display:block;width:100%;margin:0 0 8px}
+.right,.opt.right{border-color:var(--good)!important;background:var(--goodl)!important}
+.wrong,.opt.wrong{border-color:var(--bad)!important;background:var(--badl)!important}
+.tfrow.right,.asrow.right,.tfrow.wrong,.asrow.wrong{border-radius:10px}
+.fixed{outline:2px dashed var(--good);outline-offset:2px}
+.scale{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.scale .opt{text-align:center}
+.tfrow,.asrow{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:8px 10px;border:1px solid transparent;margin-bottom:6px;border-bottom:1px solid #eee8dc}
+.tft,.ast{flex:1}
+.seg{display:flex;gap:6px;flex:none}.seg .opt{min-width:92px;text-align:center}
+.asrow{flex-wrap:wrap}.seg.wrap{flex-wrap:wrap}.seg.many{flex-basis:100%}.seg.many .opt{flex:1 1 40%;font-size:15px}
+.gaptext{line-height:2.6;font-size:18px}
+select{font:inherit;font-size:17px;min-height:42px;margin:0 4px;padding:4px 8px;border:1.5px solid var(--line);border-radius:8px;background:#fff;max-width:100%}
+textarea,input.name{width:100%;font:inherit;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fff;resize:vertical}
+textarea:focus,input.name:focus,select:focus{outline:none;border-color:var(--sci);box-shadow:0 0 0 3px rgba(46,91,120,.15)}
+.count{font-size:14px;color:var(--mute);margin:4px 0 8px}.count.ok{color:var(--good)}
+.starters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;align-items:center}.sl{font-size:14px;color:var(--mute);margin-right:4px}
+.chip{border:1px solid var(--line);background:#f6f3ec;border-radius:20px;padding:6px 12px;font-size:15px;min-height:38px}
+.model{margin-top:8px;padding:12px 14px;background:var(--goodl);border-radius:10px;font-size:16px}
+.tfoot{display:flex;gap:12px;align-items:flex-start;margin-top:8px;flex-wrap:wrap}
+.fb{flex:1;font-size:16px;min-width:240px}.fb:empty{display:none}
+.fb.good{color:var(--good)}.fb.bad,.fb.warn{color:var(--bad)}.fb.sol{color:#7a5a1d;background:var(--faithl);padding:8px 12px;border-radius:8px}
+.fb.good{background:var(--goodl);padding:8px 12px;border-radius:8px}
+.dialog{background:#f6f3ec;border-radius:10px;padding:12px 14px;margin-bottom:10px}.line{margin:4px 0}.line.me{color:var(--sci)}
+.howto{background:#f3f1ec;border-radius:10px;padding:14px 18px}.howto ol{margin:6px 0 8px 0;padding-left:22px}.words{font-size:16px;margin:0}
+.heft{border:2px solid var(--ink);border-radius:12px;padding:18px 20px;background:#fff}
+.merke{background:#f3f1ec;padding:10px 14px;border-radius:8px;margin:0}
+.checkrow{display:flex;gap:12px;align-items:center;font-size:18px;min-height:48px}.checkrow input{width:28px;height:28px}
+.rules li{margin-bottom:6px}
+.kompetenz{font-size:15px;color:var(--mute);border-left:3px solid var(--line);padding-left:12px}
+.note{background:#fbf3df;border-radius:10px;padding:10px 14px;font-size:16px}
+.nav{display:flex;gap:12px;align-items:center;margin-top:24px;flex-wrap:wrap}.navhint{flex:1;font-size:15px;color:var(--mute);text-align:right}
+.qr{display:flex;flex-direction:column;align-items:center;margin:10px 0}
+.qr svg{width:min(78vw,520px);height:auto;border:1px solid var(--line);border-radius:8px}
+.qrcap{margin-top:8px;font-weight:600}
+.overlay{position:fixed;inset:0;background:rgba(20,25,32,.45);display:grid;place-items:center;z-index:20;padding:20px}
+.dlg{background:#fff;border-radius:14px;padding:22px;max-width:460px}
+.meta{color:var(--mute);font-size:15px}
+table.res{width:100%;border-collapse:collapse;font-size:15px;margin:12px 0}
+.res th,.res td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}.res th{background:#f3f1ec}
+.res td.ok{color:var(--good);font-weight:600}.res td.mid{color:#8a6a1d;font-weight:600}.res td.low{color:var(--bad);font-weight:600}
+.res tr.sum td{font-weight:700}.res tr.link{cursor:pointer}.res tr.link:hover{background:#faf8f3}
+.barcell{width:42%}.hb{display:inline-block;height:12px;background:var(--sci);border-radius:3px;vertical-align:middle;margin-right:6px}
+.answer{background:#f8f6f1;border-radius:8px;padding:10px 12px;margin-bottom:8px;white-space:normal}
+.eh{font-size:14px;color:var(--mute);margin-bottom:8px}.pts{color:var(--mute);font-weight:400}
+footer{max-width:880px;margin:0 auto;padding:0 20px 30px;font-size:13px;color:var(--mute);display:flex;justify-content:space-between}
+footer a{color:var(--mute)}
+@media (max-width:640px){.two,.scale{grid-template-columns:1fr 1fr}.card{padding:20px 16px}h2{font-size:26px}.tfrow{flex-direction:column;align-items:stretch}}
+@media print{header,footer,.noprint,.nav{display:none!important}body{background:#fff;font-size:12pt}.card{border:0;box-shadow:none;padding:0}main{padding:0}.task{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header>
+<div class="hd">
+<svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><rect x="1" y="1" width="38" height="38" rx="8" fill="#1f2a37"/><path d="M8 32V17a6 6 0 0 1 12 0v15z" fill="#2e5b78" stroke="#fff" stroke-width="1.5"/><path d="M20 32V17a6 6 0 0 1 12 0v15z" fill="#9a6a22" stroke="#fff" stroke-width="1.5"/></svg>
+<div class="ttl">Zwei Fenster zur Wirklichkeit<small>Kath. Religionslehre · Klasse 10 · GAMS Ingolstadt</small></div>
+<div id="who"></div>
+</div>
+<div id="bar"><i></i></div>
+</header>
+<main id="app"></main>
+<footer><span>Antworten bleiben auf diesem Gerät – es werden keine Daten an einen Server gesendet.</span><a href="#lk">Lehrkraft</a></footer>
+<script>
+// Minimal QR encoder (byte mode, ECC L), after Nayuki's reference algorithm. Returns boolean[][] (true = dark).
+var QR = (function () {
+  var ECC = [-1, 7, 10, 15, 20, 26, 18, 20, 24, 30, 18, 20, 24, 26, 30, 22, 24, 28, 30, 28, 28, 28, 28, 30, 30, 26, 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30];
+  var BLK = [-1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 4, 6, 6, 6, 6, 7, 8, 8, 9, 9, 10, 12, 12, 12, 13, 14, 15, 16, 17, 18, 19, 19, 20, 21, 22, 24, 25];
+  function rawMods(v) { var r = (16 * v + 128) * v + 64; if (v >= 2) { var n = Math.floor(v / 7) + 2; r -= (25 * n - 10) * n - 55; if (v >= 7) r -= 36; } return r; }
+  function dataCw(v) { return Math.floor(rawMods(v) / 8) - ECC[v] * BLK[v]; }
+  function mul(x, y) { var z = 0; for (var i = 7; i >= 0; i--) { z = (z << 1) ^ ((z >>> 7) * 0x11D); z ^= ((y >>> i) & 1) * x; } return z & 255; }
+  function rsDiv(d) { var r = []; for (var i = 0; i < d; i++) r.push(0); r[d - 1] = 1; var root = 1; for (i = 0; i < d; i++) { for (var j = 0; j < d; j++) { r[j] = mul(r[j], root); if (j + 1 < d) r[j] ^= r[j + 1]; } root = mul(root, 2); } return r; }
+  function rsRem(data, div) { var r = div.map(function () { return 0; }); data.forEach(function (b) { var f = b ^ r.shift(); r.push(0); div.forEach(function (c, i) { r[i] ^= mul(c, f); }); }); return r; }
+  function alignPos(v) { if (v == 1) return []; var n = Math.floor(v / 7) + 2; var step = Math.floor((v * 8 + n * 3 + 5) / (n * 4 - 4)) * 2; var res = [6]; for (var p = v * 4 + 10; res.length < n; p -= step) res.splice(1, 0, p); return res; }
+  function encode(bytes, forceMask) {
+    var v, cap;
+    for (v = 1; v <= 40; v++) { cap = dataCw(v) * 8; var need = 4 + (v < 10 ? 8 : 16) + bytes.length * 8; if (need <= cap) break; }
+    if (v > 40) throw new Error('Daten zu lang für QR');
+    var bits = [];
+    function put(val, len) { for (var i = len - 1; i >= 0; i--) bits.push((val >>> i) & 1); }
+    put(4, 4); put(bytes.length, v < 10 ? 8 : 16); bytes.forEach(function (b) { put(b, 8); });
+    put(0, Math.min(4, cap - bits.length)); put(0, (8 - bits.length % 8) % 8);
+    for (var pad = 0xEC; bits.length < cap; pad ^= 0xEC ^ 0x11) put(pad, 8);
+    var data = []; for (var i = 0; i < bits.length; i += 8) { var b = 0; for (var k = 0; k < 8; k++) b = (b << 1) | bits[i + k]; data.push(b); }
+    // ECC + interleave
+    var nb = BLK[v], el = ECC[v], raw = Math.floor(rawMods(v) / 8), nShort = nb - raw % nb, sLen = Math.floor(raw / nb);
+    var blocks = [], div = rsDiv(el), p = 0;
+    for (i = 0; i < nb; i++) { var dat = data.slice(p, p + sLen - el + (i < nShort ? 0 : 1)); p += dat.length; var ec = rsRem(dat, div); if (i < nShort) dat.push(0); blocks.push(dat.concat(ec)); }
+    var cw = [];
+    for (i = 0; i < blocks[0].length; i++) for (var j = 0; j < nb; j++) if (i != sLen - el || j >= nShort) cw.push(blocks[j][i]);
+    // matrix
+    var size = v * 4 + 17, M = [], F = [];
+    for (i = 0; i < size; i++) { M.push(new Array(size).fill(false)); F.push(new Array(size).fill(false)); }
+    function sf(x, y, d) { M[y][x] = d; F[y][x] = true; }
+    for (i = 0; i < size; i++) { sf(6, i, i % 2 == 0); sf(i, 6, i % 2 == 0); }
+    [[3, 3], [size - 4, 3], [3, size - 4]].forEach(function (c) {
+      for (var dy = -4; dy <= 4; dy++) for (var dx = -4; dx <= 4; dx++) { var x = c[0] + dx, y = c[1] + dy; if (x >= 0 && x < size && y >= 0 && y < size) { var dist = Math.max(Math.abs(dx), Math.abs(dy)); sf(x, y, dist != 2 && dist != 4); } }
+    });
+    var ap = alignPos(v), na = ap.length;
+    for (i = 0; i < na; i++) for (j = 0; j < na; j++) {
+      if ((i == 0 && j == 0) || (i == 0 && j == na - 1) || (i == na - 1 && j == 0)) continue;
+      for (var dy = -2; dy <= 2; dy++) for (var dx = -2; dx <= 2; dx++) sf(ap[i] + dx, ap[j] + dy, Math.max(Math.abs(dx), Math.abs(dy)) != 1);
+    }
+    function drawFormat(mask) {
+      var d = (1 << 3) | mask, r = d; for (var i = 0; i < 10; i++) r = (r << 1) ^ ((r >>> 9) * 0x537);
+      var b = ((d << 10) | r) ^ 0x5412; function g(i) { return ((b >>> i) & 1) != 0; }
+      for (i = 0; i <= 5; i++) sf(8, i, g(i)); sf(8, 7, g(6)); sf(8, 8, g(7)); sf(7, 8, g(8));
+      for (i = 9; i < 15; i++) sf(14 - i, 8, g(i));
+      for (i = 0; i < 8; i++) sf(size - 1 - i, 8, g(i));
+      for (i = 8; i < 15; i++) sf(8, size - 15 + i, g(i));
+      sf(8, size - 8, true);
+    }
+    drawFormat(0);
+    if (v >= 7) { var r = v; for (i = 0; i < 12; i++) r = (r << 1) ^ ((r >>> 11) * 0x1F25); var vb = (v << 12) | r;
+      for (i = 0; i < 18; i++) { var bit = ((vb >>> i) & 1) != 0, a = size - 11 + i % 3, bb = Math.floor(i / 3); sf(a, bb, bit); sf(bb, a, bit); } }
+    // codewords
+    var idx = 0;
+    for (var right = size - 1; right >= 1; right -= 2) {
+      if (right == 6) right = 5;
+      for (var vert = 0; vert < size; vert++) for (j = 0; j < 2; j++) {
+        var x = right - j, up = ((right + 1) & 2) == 0, y = up ? size - 1 - vert : vert;
+        if (!F[y][x] && idx < cw.length * 8) { M[y][x] = ((cw[idx >>> 3] >>> (7 - (idx & 7))) & 1) != 0; idx++; }
+      }
+    }
+    function applyMask(m) {
+      for (var y = 0; y < size; y++) for (var x = 0; x < size; x++) {
+        if (F[y][x]) continue; var inv;
+        switch (m) { case 0: inv = (x + y) % 2 == 0; break; case 1: inv = y % 2 == 0; break; case 2: inv = x % 3 == 0; break; case 3: inv = (x + y) % 3 == 0; break;
+          case 4: inv = (Math.floor(x / 3) + Math.floor(y / 2)) % 2 == 0; break; case 5: inv = x * y % 2 + x * y % 3 == 0; break;
+          case 6: inv = (x * y % 2 + x * y % 3) % 2 == 0; break; default: inv = ((x + y) % 2 + x * y % 3) % 2 == 0; }
+        if (inv) M[y][x] = !M[y][x];
+      }
+    }
+    function penalty() {
+      var s = 0, dark = 0;
+      for (var y = 0; y < size; y++) { var run = 1; for (var x = 0; x < size; x++) { if (M[y][x]) dark++; if (x > 0) { if (M[y][x] == M[y][x - 1]) { run++; if (run == 5) s += 3; else if (run > 5) s++; } else run = 1; } } }
+      for (var x2 = 0; x2 < size; x2++) { var run2 = 1; for (var y2 = 1; y2 < size; y2++) { if (M[y2][x2] == M[y2 - 1][x2]) { run2++; if (run2 == 5) s += 3; else if (run2 > 5) s++; } else run2 = 1; } }
+      for (y = 0; y < size - 1; y++) for (x = 0; x < size - 1; x++) { var c = M[y][x]; if (c == M[y][x + 1] && c == M[y + 1][x] && c == M[y + 1][x + 1]) s += 3; }
+      s += Math.floor(Math.abs(dark * 20 - size * size * 10) / (size * size)) * 10;
+      return s;
+    }
+    var best = 0, bestP = Infinity;
+    for (var m = 0; m < 8; m++) { applyMask(m); drawFormat(m); var pp = penalty(); if (pp < bestP) { bestP = pp; best = m; } applyMask(m); }
+    if (forceMask !== undefined) best = forceMask; applyMask(best); drawFormat(best);
+    return M;
+  }
+  function svg(text) {
+    var bytes = Array.from(new TextEncoder().encode(text));
+    var M = encode(bytes), n = M.length, q = 4, d = '';
+    for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) if (M[y][x]) d += 'M' + (x + q) + ',' + (y + q) + 'h1v1h-1z';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + (n + 2 * q) + ' ' + (n + 2 * q) + '" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="#fff"/><path d="' + d + '" fill="#000"/></svg>';
+  }
+  return { encode: encode, svg: svg };
+})();
+
+
+/* ===== Inhalt ===== */
+var STEPS = [
+  { id: 'start', kicker: 'Start', title: 'Woher kommen Welt und Mensch?', kind: 'start' },
+  {
+    id: 'einstieg', kicker: 'Schritt 1 · ca. 5 Min.', title: 'Eine starke Behauptung',
+    html: '<blockquote class="claim">„Die Wissenschaft hat bewiesen, dass Gott die Welt nicht erschaffen hat.“</blockquote>' +
+      '<p>Diese Behauptung hört man oft. Heute prüfst du sie. Am Ende entscheidest du noch einmal – dann mit Argumenten.</p>',
+    tasks: [
+      { id: 'vor', type: 'scale', q: 'Wie siehst du das <b>jetzt</b>, vor der Arbeit?', options: ['stimme zu', 'stimme eher zu', 'stimme eher nicht zu', 'stimme nicht zu'] },
+      { id: 't1', type: 'text', q: 'Begründe deine Einschätzung in <b>einem</b> Satz.', min: 25, max: 200, starters: ['Ich denke das, weil …', 'Ich bin unsicher, denn …'], noModel: true }
+    ]
+  },
+  {
+    id: 'universum', kicker: 'Schritt 2 · Fenster Naturwissenschaft · ca. 8 Min.', title: 'Wie entwickelte sich das Universum?',
+    html: '<div class="src sci"><h3>Text A · Die Urknalltheorie</h3>' +
+      '<p>Nach heutigem Wissen ist das Universum etwa <b>13,8 Milliarden Jahre</b> alt. Die <b>Urknalltheorie</b> beschreibt seine frühe Entwicklung: Am Anfang war das Universum extrem <b>heiß und dicht</b>. Der Raum dehnte sich aus und das Universum kühlte ab. Es bildeten sich Atome. Durch die Schwerkraft entstanden über lange Zeit Sterne und Galaxien. In Sternen entstanden schwerere Elemente. Aus dem Material früherer Sterne entstanden später unsere Sonne und die Erde.</p>' +
+      '<p><b>Woher weiß man das, obwohl niemand dabei war?</b> Forschende messen, dass sich ferne Galaxien <b>von uns entfernen</b>: Der Raum dehnt sich aus. Außerdem misst man überall im All eine schwache Strahlung, die <b>kosmische Hintergrundstrahlung</b>. Sie ist eine Spur des frühen, heißen Universums.</p>' +
+      '<p><b>Wichtig:</b> Der „Urknall“ war keine Explosion in einen schon vorhandenen leeren Raum. Und das Modell beantwortet nicht, <b>warum es überhaupt etwas gibt</b>.</p>' +
+      '<p class="srcnote">Didaktisch bearbeitet nach: NASA Science, „Universe – Overview“.</p></div>',
+    tasks: [
+      { id: 'a1', lab: 'Urknall: Lückentext', type: 'gaps', q: 'Vervollständige den Lückentext.', text: 'Das Universum ist etwa {0} Jahre alt. Am Anfang war es extrem {1}. Dass sich ferne Galaxien {2}, zeigt: Der Raum dehnt sich aus. Ein weiterer Beleg ist die kosmische {3}. Unsere Sonne entstand {4}.',
+        gaps: [['13,8 Milliarden', '6000', '4,6 Milliarden'], ['heiß und dicht', 'kalt und leer', 'still und dunkel'], ['von uns entfernen', 'auf uns zubewegen', 'nicht bewegen'], ['Hintergrundstrahlung', 'Sonnenstrahlung', 'Explosion'], ['aus dem Material früherer Sterne', 'gleichzeitig mit dem Urknall', 'vor allen Galaxien']],
+        answer: [0, 0, 0, 0, 0], feedback: 'Das Alter von 4,6 Milliarden Jahren gehört zur Erde, nicht zum Universum.' },
+      { id: 'a2', lab: 'Urknall: Grenze der Theorie', type: 'mc', q: 'Welche Frage kann die Urknalltheorie <b>nicht</b> beantworten?', options: ['Wie alt ist das Universum?', 'Wie entstanden Sterne und Galaxien?', 'Warum gibt es überhaupt etwas und nicht nichts?', 'Woher kommt die Hintergrundstrahlung?'], answer: 2,
+        feedback: 'Die Naturwissenschaft beschreibt, <i>wie</i> sich das Vorhandene entwickelt. Die Frage, <i>warum</i> überhaupt etwas existiert, liegt außerhalb ihrer Messmethoden.' }
+    ]
+  },
+  {
+    id: 'leben', kicker: 'Schritt 3 · Fenster Naturwissenschaft · ca. 8 Min.', title: 'Wie entwickelte sich das Leben?',
+    html: '<div class="src sci"><h3>Text B · Die Evolutionstheorie</h3>' +
+      '<p>Die Erde entstand vor etwa <b>4,6 Milliarden Jahren</b>. Später entwickelte sich auf ihr Leben. Wie genau aus unbelebter Materie die ersten Lebewesen wurden, ist bis heute nicht vollständig geklärt.</p>' +
+      '<p>Die <b>Evolutionstheorie</b> erklärt, wie sich <b>Populationen</b> von Lebewesen über viele Generationen verändern. Nachkommen unterscheiden sich in erblichen Merkmalen, z. B. durch zufällige Veränderungen im Erbgut. Manche Merkmale sind in einer bestimmten Umwelt ein Vorteil: Wer sie hat, bekommt mehr Nachkommen. So wird das Merkmal häufiger – das nennt man <b>natürliche Selektion</b>. Über sehr lange Zeiträume entstehen so neue Arten. Evolution hat <b>kein vorher festgelegtes Ziel</b>.</p>' +
+      '<p><b>Belege:</b> Fossilien und Vergleiche des Erbguts. Auch der Mensch gehört zu dieser Geschichte: Er stammt <b>nicht vom heutigen Schimpansen</b> ab – Menschen und Schimpansen haben <b>gemeinsame Vorfahren</b>. Die Evolutionstheorie beschreibt die Entwicklung des Lebens, nicht die Entstehung des Universums.</p>' +
+      '<p class="srcnote">Didaktisch bearbeitet nach: Smithsonian Institution, Human Origins Program.</p></div>',
+    tasks: [
+      { id: 'b1', lab: 'Evolution: richtig/falsch', type: 'tf', q: 'Richtig oder falsch?', items: ['Die Evolutionstheorie erklärt, wie sich Lebewesen über viele Generationen verändern.', 'Der Mensch stammt vom heutigen Schimpansen ab.', 'Evolution verfolgt ein vorher festgelegtes Ziel.', 'Fossilien und Erbgut-Vergleiche sind Belege für die Evolution.', 'Die Evolutionstheorie erklärt auch die Entstehung des Universums.'],
+        answer: [true, false, false, true, false], feedback: 'Mensch und Schimpanse haben gemeinsame Vorfahren. Evolution hat kein Ziel. Für das Universum ist die Kosmologie (Urknalltheorie) zuständig.' },
+      { id: 'b2', lab: 'Begriff „Theorie“', type: 'mc', q: 'Manche sagen: „Evolution ist ja nur eine Theorie.“ In der Wissenschaft ist eine <b>Theorie</b> …', options: ['eine bloße Vermutung ohne Beweise.', 'ein gut geprüftes Erklärungsmodell, das durch viele Beobachtungen gestützt wird.', 'eine persönliche Meinung von Forschenden.', 'ein Gesetz, das sich nie mehr ändern darf.'], answer: 1,
+        feedback: 'Eine wissenschaftliche Theorie ist ein umfassendes, vielfach überprüftes Modell. Sie bleibt offen für neue Daten – das macht sie stark, nicht schwach.' },
+      { id: 't2', type: 'text', q: 'Wähle <b>einen</b> Beleg (Hintergrundstrahlung, sich entfernende Galaxien, Fossilien oder Erbgut-Vergleich). <b>Erkläre</b> in 2–3 Sätzen, warum er die passende Theorie stützt.', min: 60, max: 300,
+        starters: ['Ein Beleg für die … ist …', 'Das zeigt, dass …', 'Deshalb …'],
+        model: 'z. B.: Ein Beleg für die Evolutionstheorie sind Fossilien. In älteren Gesteinsschichten findet man andere, oft einfachere Lebewesen als in jüngeren. Das zeigt, dass sich Lebewesen über lange Zeiträume verändert haben.' }
+    ]
+  },
+  {
+    id: 'genesis', kicker: 'Schritt 4 · Fenster Glaube · ca. 12 Min.', title: 'Genesis 1 – ein Glaubenstext',
+    html: '<div class="src faith"><h3>Bibel · Genesis 1,1–2,3 im Überblick</h3>' +
+      '<p class="verse">„Im Anfang erschuf Gott Himmel und Erde.“ <span>(Gen 1,1)</span></p>' +
+      '<table class="days"><tr><th>Tage 1–3: Gott <b>ordnet</b> Lebensräume</th><th>Tage 4–6: Gott <b>bevölkert</b> sie</th></tr>' +
+      '<tr><td><b>1</b> Licht und Finsternis</td><td><b>4</b> Sonne, Mond und Sterne</td></tr>' +
+      '<tr><td><b>2</b> Himmelsgewölbe: Wasser oben und unten</td><td><b>5</b> Wassertiere und Vögel</td></tr>' +
+      '<tr><td><b>3</b> Land, Meer und Pflanzen</td><td><b>6</b> Landtiere und Menschen</td></tr>' +
+      '<tr><td colspan="2" class="sabbat"><b>7</b> Gott ruht, segnet den siebten Tag und heiligt ihn (Gen 2,1–3).</td></tr></table>' +
+      '<p>Immer wieder kehren dieselben Formeln zurück: „Gott sprach …“ – „Und so geschah es.“ – „Gott sah, dass es gut war.“ – „Es wurde Abend und es wurde Morgen.“ Am Ende heißt es:</p>' +
+      '<p class="verse">„Gott sah alles an, was er gemacht hatte: Und siehe, es war sehr gut.“ <span>(Gen 1,31)</span></p>' +
+      '<p class="verse">„Gott erschuf den Menschen als sein Bild, als Bild Gottes erschuf er ihn. Männlich und weiblich erschuf er sie.“ <span>(Gen 1,27)</span></p>' +
+      '<h3 class="mt">Kommentar · Was will Genesis 1 sagen?</h3>' +
+      '<p>Genesis 1 ist eine kunstvoll geordnete Erzählung, fast wie ein Lied – <b>kein Protokoll</b> und keine Zeitmessung. Ihr Weltbild stammt aus dem Alten Orient: Man stellte sich den Himmel als Gewölbe vor, über dem Wasser liegt. Der Text will keine Naturwissenschaft betreiben. Er verkündet, wie Israel die Welt im Glauben versteht: <b>Gott ist der Ursprung von allem</b>. Die Welt ist <b>gut</b>. Der Mensch hat als <b>Bild Gottes</b> eine besondere <b>Würde</b> und <b>Verantwortung</b> (Gen 1,26–28). Ziel ist der siebte Tag: Leben ist mehr als Arbeit.</p>' +
+      '<p class="srcnote">Bibelzitate: Einheitsübersetzung 2016. Kommentar didaktisch bearbeitet nach: LMU München, Bibelstudium „Gen 1,1–2,4a“; Päpstliche Bibelkommission, Inspiration und Wahrheit der Heiligen Schrift (2014).</p></div>',
+    tasks: [
+      { id: 'g1', lab: 'Gen 1: Aufbau (Tage 1–3 / 4–6)', type: 'gaps', q: 'Untersuche den Aufbau: Welchen Lebensraum bevölkert Gott an den Tagen 4–6?', text: 'Tag 4 (Sonne, Mond, Sterne) gehört zu {0}. Tag 5 (Wassertiere, Vögel) gehört zu {1}. Tag 6 (Landtiere, Menschen) gehört zu {2}.',
+        gaps: [['Tag 1: Licht und Finsternis', 'Tag 2: Himmel und Wasser', 'Tag 3: Land und Pflanzen'], ['Tag 1: Licht und Finsternis', 'Tag 2: Himmel und Wasser', 'Tag 3: Land und Pflanzen'], ['Tag 1: Licht und Finsternis', 'Tag 2: Himmel und Wasser', 'Tag 3: Land und Pflanzen']],
+        answer: [0, 1, 2], feedback: 'Die Tage 1–3 und 4–6 stehen sich paarweise gegenüber. So ein symmetrischer Aufbau zeigt: Der Text ist bewusst literarisch gestaltet.' },
+      { id: 'g2', lab: 'Gen 1: Sinn der sieben Tage', type: 'mc', q: 'Warum spricht Genesis 1 von <b>sieben Tagen</b>?', options: ['Der Verfasser hat die Dauer der Schöpfung genau beobachtet.', 'Der Text ordnet die Schöpfung im Rhythmus einer Woche, mit dem Ruhetag als Ziel – er misst keine Zeit.', 'Ein biblischer Tag bedeutet genau eine Million Jahre.', 'Die Menschen kannten damals schon den Urknall.'], answer: 1,
+        feedback: 'Die sieben Tage sind eine literarische Ordnung. Ihr Höhepunkt ist der Sabbat (Gen 2,1–3).' },
+      { id: 'g3', lab: 'Gen 1: Aussageabsicht', type: 'tf', q: 'Richtig oder falsch?', items: ['Genesis 1 will vor allem sagen: Gott ist der Ursprung von allem, und die Welt ist gut.', 'Genesis 1 gibt das genaue Alter des Universums an.', 'Das Weltbild von Genesis 1 (Himmelsgewölbe, Wasser darüber) stammt aus dem Alten Orient.', 'Nach Genesis 1 hat jeder Mensch als Bild Gottes eine besondere Würde.'],
+        answer: [true, false, true, true], feedback: 'Genesis 1 ist ein Glaubenstext. Er macht Aussagen über Gott, Welt und Mensch – nicht über Messdaten.' },
+      { id: 't3', type: 'text', q: '<b>Erkläre</b>, was die Aussage „Bild Gottes“ (Gen 1,27) für den Umgang mit Menschen bedeutet. Nenne eine konkrete Folge.', min: 60, max: 300,
+        starters: ['Weil jeder Mensch Bild Gottes ist, …', 'Das bedeutet für den Alltag, dass …', 'Zum Beispiel …'],
+        model: 'z. B.: Weil jeder Mensch Bild Gottes ist, hat jeder die gleiche Würde – egal ob reich oder arm, krank oder gesund, egal welcher Herkunft. Deshalb darf niemand gemobbt, ausgegrenzt oder wie eine Sache behandelt werden. Außerdem trägt der Mensch Verantwortung für die Schöpfung (Gen 1,28).' }
+    ]
+  },
+  {
+    id: 'kirche', kicker: 'Schritt 5 · Wie deutet die Kirche das? · ca. 10 Min.', title: 'Glaube und Vernunft – kein Widerspruch',
+    html: '<div class="src faith"><h3>Papst Franziskus (2014)</h3>' +
+      '<p class="verse">„Wenn wir im Buch Genesis den Schöpfungsbericht lesen, so riskieren wir, uns vorzustellen, Gott sei ein Magier gewesen mit einem Zauberstab, der alle Dinge verwirklichen kann. Dem ist nicht so.“</p>' +
+      '<p>Franziskus erklärt weiter: Gott hat die Wesen erschaffen und sie sich <b>nach inneren Gesetzen entwickeln lassen</b>, die er ihnen gegeben hat. Urknall und Evolution widersprechen deshalb nicht dem Glauben an einen Schöpfer – sie setzen eine Welt voraus, die überhaupt existiert.</p>' +
+      '<p class="srcnote">Ansprache an die Päpstliche Akademie der Wissenschaften, 27.10.2014 (vatican.va).</p>' +
+      '<h3 class="mt">Joseph Ratzinger (später Papst Benedikt XVI.)</h3>' +
+      '<p>Ratzinger unterscheidet zwei Fragen: Die Evolutionstheorie fragt, <b>wie</b> sich Dinge entwickeln und zusammenhängen. Der Schöpfungsglaube fragt, <b>warum überhaupt etwas ist und nicht nichts</b>. Die beiden Fragen liegen auf verschiedenen Ebenen. Eine gute wissenschaftliche Erklärung beantwortet nicht automatisch die Frage nach dem Sinn – und der Glaube ersetzt keine Forschung.</p>' +
+      '<p class="srcnote">Nach: J. Ratzinger, Dogma und Verkündigung, S. 145 (Textauszug: Institut Papst Benedikt XVI.).</p>' +
+      '<h3 class="mt">Die Lehre der Kirche</h3>' +
+      '<p><b>Johannes Paul II.</b> beginnt sein Lehrschreiben <i>Fides et ratio</i> (1998) mit dem Bild: Glaube und Vernunft sind <b>wie zwei Flügel</b>, mit denen sich der menschliche Geist zur Wahrheit erhebt.</p>' +
+      '<p><b>Katechismus (KKK 159):</b> Zwischen Glaube und Vernunft kann es keinen echten Widerspruch geben, denn derselbe Gott hat die Welt geschaffen und dem Menschen die Vernunft geschenkt. Wahres kann Wahrem nicht widersprechen (sinngemäß).</p></div>',
+    tasks: [
+      { id: 'k1', lab: 'Franziskus / Ratzinger zuordnen', type: 'assign', q: 'Wer sagt das? Ordne zu.', cats: ['Franziskus', 'Ratzinger'], items: ['Der Schöpfungsglaube fragt, warum überhaupt etwas ist und nicht nichts.', 'Gott ist kein Magier mit einem Zauberstab.', 'Gott lässt die Geschöpfe sich nach inneren Gesetzen entwickeln.', 'Evolution und Schöpfungsglaube beantworten Fragen auf verschiedenen Ebenen.'],
+        answer: [1, 0, 0, 1], feedback: 'Beide kommen zum gleichen Ergebnis: Naturwissenschaft und Schöpfungsglaube schließen sich nicht aus.' },
+      { id: 'k2', lab: 'Wie-Fragen / Warum-Fragen', type: 'assign', q: 'Welches „Fenster“ ist zuständig? Ordne jede Frage zu.', cats: ['Naturwissenschaft: Wie?', 'Glaube: Warum? Wozu?'], items: ['Wie alt ist die Erde?', 'Warum gibt es überhaupt eine Welt?', 'Hat mein Leben einen Sinn?', 'Wie entstehen neue Arten?', 'Welche Belege gibt es für den Urknall?', 'Wie entstanden Sterne?', 'Warum hat jeder Mensch Würde?', 'Wofür sind wir Menschen verantwortlich?'],
+        answer: [0, 1, 1, 0, 0, 0, 1, 1], feedback: 'Wie-Fragen beantwortet man mit Messung und Experiment. Warum- und Wozu-Fragen fragen nach Sinn, Wert und Ziel – dafür ist das Fenster des Glaubens (und der Philosophie) da.' }
+    ]
+  },
+  {
+    id: 'fenster', kicker: 'Schritt 6 · Zwei Fenster zur Wirklichkeit · ca. 10 Min.', title: 'Zwei Fenster – ein Haus',
+    html: '<div class="src both"><h3>Ein Beispiel: Warum kocht das Wasser?</h3>' +
+      '<div class="two"><div class="w sci"><b>Antwort 1</b><br>„Weil die Herdplatte Energie zuführt, bis das Wasser 100 °C erreicht.“</div><div class="w faith"><b>Antwort 2</b><br>„Weil ich meiner Freundin einen Tee kochen will.“</div></div>' +
+      '<p>Beide Antworten sind <b>richtig</b>. Sie widersprechen sich nicht, denn sie beantworten <b>verschiedene Fragen</b>: Antwort 1 erklärt den Vorgang (<i>wie?</i>), Antwort 2 nennt den Sinn (<i>wozu?</i>). So ist es auch mit Naturwissenschaft und Glaube: Sie sind wie <b>zwei Fenster</b>, durch die man auf dieselbe Wirklichkeit schaut. Man nennt das <b>komplementär</b> (= sich ergänzend).</p>' +
+      '<p>Problematisch wird es, wenn ein Fenster zugemauert wird oder ein Fenster so tut, als wäre es das andere.</p></div>',
+    tasks: [
+      { id: 'f1', lab: 'Positionen erkennen', type: 'assign', q: 'Ordne jede Aussage der passenden Position zu.', cats: ['Wörtliches Verständnis (Kreationismus)', 'Nur Messbares zählt (Szientismus)', 'Gott als Lückenfüller', 'Zwei Fenster (komplementär)'],
+        items: ['„Wo die Forschung nicht weiterweiß, da muss Gott eingegriffen haben.“', '„Die Wissenschaft erklärt, wie sich die Welt entwickelt. Der Glaube deutet, warum es sie gibt und wozu wir leben.“', '„Die Welt ist wörtlich in sechs Tagen zu je 24 Stunden entstanden. Die Wissenschaft irrt.“', '„Nur was man messen kann, ist wirklich. Also ist Glaube Unsinn.“'],
+        answer: [2, 3, 0, 1], feedback: 'Die katholische Kirche vertritt die Position „Zwei Fenster“. Kreationismus liest Gen 1 wie ein Protokoll. Szientismus erklärt Messbarkeit zur einzigen Wahrheit – das kann man aber selbst nicht messen. Der „Lückenfüller-Gott“ schrumpft mit jeder neuen Entdeckung.' },
+      { id: 't4', type: 'dialog', q: '<b>Ergänze den Dialog.</b> Antworte als Sara mit mindestens einem Argument aus dieser Stunde.', lines: [['Lea', 'Entweder Urknall oder Gott. Beides geht nicht. Wer Physik ernst nimmt, kann nicht an Schöpfung glauben.']], who: 'Sara', min: 70, max: 350,
+        starters: ['Das sehe ich anders, denn …', 'Die Naturwissenschaft fragt …, der Glaube fragt …', 'Sogar Papst Franziskus sagt …'],
+        model: 'z. B.: Das sehe ich anders. Die Urknalltheorie erklärt, wie sich das Universum entwickelt hat. Genesis 1 will aber keine Physik sein, sondern sagt, dass Gott der Ursprung von allem ist und die Welt gut ist. Das sind zwei verschiedene Fragen. Sogar Papst Franziskus sagt, Gott ist kein Zauberer, sondern lässt die Welt sich nach Naturgesetzen entwickeln.' }
+    ]
+  },
+  {
+    id: 'urteil', kicker: 'Schritt 7 · Dein Urteil · ca. 10 Min.', title: 'Stellung nehmen',
+    html: '<blockquote class="claim">„Die Wissenschaft hat bewiesen, dass Gott die Welt nicht erschaffen hat.“</blockquote>' +
+      '<p><b>Nimm Stellung</b> zu dieser Behauptung. Bewertet wird nicht deine Meinung, sondern wie gut du sie begründest.</p>' +
+      '<div class="howto"><b>So baust du deine Stellungnahme auf:</b><ol><li><b>Position:</b> Ich stimme (nicht/teilweise) zu.</li><li><b>Argument 1</b> mit einem Fachbegriff (z. B. Modell, Glaubenstext, Aussageabsicht).</li><li><b>Argument 2</b> mit einer Quelle (Genesis, Franziskus, Ratzinger, KKK).</li><li><b>Fazit</b> in einem Satz.</li></ol>' +
+      '<p class="words"><b>Wortliste:</b> komplementär · Modell · Beleg · Glaubenstext · Aussageabsicht · Wie-Frage · Sinnfrage · Ursprung · Würde · Verantwortung</p></div>',
+    tasks: [
+      { id: 't5', type: 'text', q: 'Deine Stellungnahme (mindestens 4 Sätze):', min: 180, max: 600, rows: 8,
+        starters: ['Ich stimme der Aussage … zu, weil …', 'Erstens …', 'Zweitens zeigt …, dass …', 'Insgesamt …'],
+        model: 'Erwartet: klare Position; Unterscheidung Wie-Frage (Naturwissenschaft) / Warum-Wozu-Frage (Glaube); Genesis 1 als Glaubenstext mit Aussageabsicht, nicht als Protokoll; eine Quelle (z. B. Franziskus: Gott kein Zauberer; Ratzinger: Warum ist überhaupt etwas?; KKK 159). Auch eine kritische Position ist möglich, wenn sie begründet ist – z. B. „Die Wissenschaft kann Gott nicht beweisen, aber auch nicht widerlegen.“' },
+      { id: 'nach', type: 'scale', q: 'Wie siehst du die Behauptung <b>jetzt</b>?', options: ['stimme zu', 'stimme eher zu', 'stimme eher nicht zu', 'stimme nicht zu'] },
+      { id: 't6', type: 'text', optional: true, q: '<span class="plus">Zusatz für Schnelle</span> Ratzinger unterscheidet „Wie entwickelt sich etwas?“ und „Warum gibt es überhaupt etwas?“. <b>Erkläre</b> den Unterschied an einem eigenen Beispiel.', min: 40, max: 250,
+        model: 'z. B.: Ein Biologe kann erklären, wie sich eine Eiche aus einer Eichel entwickelt. Damit ist aber nicht beantwortet, warum es überhaupt Bäume, eine Natur und eine Welt gibt.' }
+    ]
+  },
+  {
+    id: 'heft', kicker: 'Schritt 8 · Sicherung · ca. 8 Min.', title: 'Hefteintrag',
+    html: '<p>Übertrage den Hefteintrag sauber in dein <b>Religionsheft</b>. So hast du ihn für die Probe.</p>' +
+      '<div class="heft"><h3>Zwei Fenster zur Wirklichkeit</h3>' +
+      '<div class="two"><div class="w sci"><b>Fenster 1: Naturwissenschaft</b><br><u>Frage:</u> Wie hat sich die Welt entwickelt?<br><u>Methode:</u> beobachten, messen, Modelle prüfen<br><u>Beispiele:</u> Urknalltheorie (Universum, ca. 13,8 Mrd. Jahre; Belege: Hintergrundstrahlung, Galaxien entfernen sich) · Evolutionstheorie (Leben; Belege: Fossilien, Erbgut)</div>' +
+      '<div class="w faith"><b>Fenster 2: Glaube</b><br><u>Frage:</u> Warum gibt es die Welt? Wozu lebe ich?<br><u>Quelle:</u> Genesis 1 = Glaubenstext, kein Protokoll<br><u>Botschaft:</u> Gott ist Ursprung von allem · die Welt ist gut (Gen 1,31) · der Mensch ist Bild Gottes: Würde und Verantwortung (Gen 1,27–28) · Ruhetag (Gen 2,1–3)</div></div>' +
+      '<p class="merke"><b>Merke:</b> Naturwissenschaft und Glaube sind <b>komplementär</b>: Sie beantworten verschiedene Fragen und ergänzen sich. Die Kirche sagt: Zwischen Glaube und Vernunft gibt es keinen echten Widerspruch (KKK 159; Franziskus: „Gott ist kein Magier mit Zauberstab“). Die Wissenschaft kann Gott weder beweisen noch widerlegen.</p></div>',
+    tasks: [
+      { id: 'h1', type: 'check', q: 'Ich habe den Hefteintrag vollständig in mein Heft übertragen.' }
+    ]
+  },
+  { id: 'abgabe', kicker: 'Abgabe', title: 'Ergebnis abgeben', kind: 'abgabe' }
+];
+
+STEPS.forEach(function (s) { (s.tasks || []).forEach(function (t) { if (t.type === 'mc') t.answer = [].concat(t.answer); }); });
+
+/* ===== Speicher ===== */
+var KEY = 'gams-kl10-zwei-fenster-v1';
+var S = load() || fresh();
+function fresh() { return { name: '', step: 0, ans: {}, res: {}, t0: 0, t1: 0 }; }
+function load() { try { var r = localStorage.getItem(KEY); return r ? JSON.parse(r) : null; } catch (e) { return null; } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+function $(s, r) { return (r || document).querySelector(s); }
+function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+/* ===== Aufgaben-Status ===== */
+function taskDone(t) {
+  var a = S.ans[t.id];
+  if (t.type === 'text' || t.type === 'dialog') return t.optional || (a && a.trim().length >= t.min);
+  if (t.type === 'scale') return a != null;
+  if (t.type === 'check') return a === true;
+  var r = S.res[t.id]; return !!(r && r.done);
+}
+function stepDone(st) { return !st.tasks || st.tasks.every(taskDone); }
+function contentSteps() { return STEPS.filter(function (s) { return s.tasks; }); }
+
+/* ===== Rendering ===== */
+function render() {
+  var app = $('#app'); app.innerHTML = '';
+  var st = STEPS[S.step];
+  var n = contentSteps().length, idx = contentSteps().indexOf(st);
+  $('#bar i').style.width = (st.kind === 'abgabe' ? 100 : Math.max(0, idx) / n * 100) + '%';
+  $('#who').textContent = S.name ? S.name : '';
+  var card = el('section', 'card');
+  card.appendChild(el('div', 'kicker', st.kicker));
+  card.appendChild(el('h2', null, st.title));
+  if (st.kind === 'start') renderStart(card);
+  else if (st.kind === 'abgabe') renderAbgabe(card);
+  else {
+    card.appendChild(el('div', 'content', st.html));
+    st.tasks.forEach(function (t, i) { card.appendChild(renderTask(t, i)); });
+    var nav = el('div', 'nav');
+    var back = el('button', 'btn ghost', 'Zurück'); back.onclick = function () { go(S.step - 1); };
+    var next = el('button', 'btn primary', S.step === STEPS.length - 2 ? 'Zur Abgabe' : 'Weiter');
+    var hint = el('span', 'navhint');
+    function upd() { var ok = stepDone(st); next.disabled = !ok; hint.textContent = ok ? '' : 'Bearbeite zuerst alle Pflichtaufgaben.'; }
+    next.onclick = function () { if (stepDone(st)) go(S.step + 1); };
+    nav.appendChild(back); nav.appendChild(hint); nav.appendChild(next);
+    card.appendChild(nav); card._upd = upd; upd();
+  }
+  app.appendChild(card);
+  window.scrollTo(0, 0);
+}
+function refreshNav() { var c = $('.card'); if (c && c._upd) c._upd(); }
+function go(i) { S.step = Math.max(0, Math.min(STEPS.length - 1, i)); save(); render(); }
+
+function renderStart(card) {
+  var c = el('div', 'content');
+  c.innerHTML = '<p class="lead">In dieser Doppelstunde arbeitest du <b>selbstständig</b>. Du schaust durch zwei „Fenster“ auf die Frage, woher Welt und Mensch kommen: durch das Fenster der <b>Naturwissenschaft</b> und durch das Fenster des <b>Glaubens</b>.</p>' +
+    '<ul class="rules"><li><b>8 Schritte</b>, jeweils: kurz lesen → Aufgaben lösen → prüfen.</li><li>Du kommst erst weiter, wenn die Aufgaben eines Schrittes erledigt sind.</li><li>Deine Antworten werden <b>automatisch auf diesem iPad</b> zwischengespeichert, auch wenn die Seite neu lädt.</li><li>Am Ende erscheint ein <b>QR-Code</b>. Den scannt deine Lehrkraft – so ist deine Arbeit abgegeben.</li></ul>' +
+    '<p class="kompetenz"><b>Ziel (LehrplanPLUS KR10, LB 2):</b> Ich kann naturwissenschaftliche Theorien (Urknall, Evolution) und den biblischen Schöpfungstext unterscheiden und erklären, warum Glaube und Naturwissenschaft sich ergänzen können.</p>';
+  card.appendChild(c);
+  var f = el('div', 'task');
+  f.innerHTML = '<label class="q" for="nm">Dein Name (Vorname + erster Buchstabe des Nachnamens)</label>';
+  var inp = el('input', 'name'); inp.id = 'nm'; inp.maxLength = 40; inp.autocomplete = 'off'; inp.value = S.name || '';
+  f.appendChild(inp);
+  card.appendChild(f);
+  var nav = el('div', 'nav');
+  var b = el('button', 'btn primary', S.t0 ? 'Weiterarbeiten' : 'Los geht’s');
+  function upd() { b.disabled = inp.value.trim().length < 3; }
+  inp.oninput = upd; upd();
+  b.onclick = function () { S.name = inp.value.trim(); if (!S.t0) S.t0 = Date.now(); save(); go(S.step > 0 ? S.step : 1); };
+  if (S.t0) {
+    var r = el('button', 'btn ghost', 'Neu beginnen (andere Person)');
+    r.onclick = function () { confirmBox('Alle gespeicherten Antworten auf diesem iPad löschen und neu beginnen?', function () { S = fresh(); save(); render(); }); };
+    nav.appendChild(r);
+    var info = el('p', 'note', 'Auf diesem iPad ist bereits eine Bearbeitung von <b>' + esc(S.name) + '</b> gespeichert. Wenn das nicht du bist: „Neu beginnen“.');
+    card.appendChild(info);
+  }
+  nav.appendChild(el('span', 'navhint')); nav.appendChild(b);
+  card.appendChild(nav);
+}
+
+function renderTask(t, i) {
+  var box = el('div', 'task' + (t.optional ? ' opt' : ''));
+  box.appendChild(el('div', 'q', '<span class="num">' + (i + 1) + '</span>' + t.q));
+  var r = S.res[t.id] || {};
+  var fb = el('div', 'fb');
+  function setRes(o) { S.res[t.id] = o; save(); refreshNav(); }
+  if (t.type === 'scale') {
+    var row = el('div', 'scale');
+    t.options.forEach(function (o, k) {
+      var b = el('button', 'opt' + (S.ans[t.id] === k ? ' sel' : ''), o);
+      b.onclick = function () { S.ans[t.id] = k; save(); row.querySelectorAll('button').forEach(function (x, j) { x.classList.toggle('sel', j === k); }); refreshNav(); };
+      row.appendChild(b);
+    });
+    box.appendChild(row); return box;
+  }
+  if (t.type === 'check') {
+    var lab = el('label', 'checkrow'); var cb = el('input'); cb.type = 'checkbox'; cb.checked = S.ans[t.id] === true;
+    cb.onchange = function () { S.ans[t.id] = cb.checked; save(); refreshNav(); };
+    lab.appendChild(cb); lab.appendChild(el('span', null, 'erledigt')); box.appendChild(lab); return box;
+  }
+  if (t.type === 'text' || t.type === 'dialog') {
+    if (t.type === 'dialog') {
+      var dl = el('div', 'dialog');
+      t.lines.forEach(function (l) { dl.appendChild(el('div', 'line', '<b>' + l[0] + ':</b> „' + l[1] + '“')); });
+      dl.appendChild(el('div', 'line me', '<b>' + t.who + ':</b>')); box.appendChild(dl);
+    }
+    if (t.starters) {
+      var sr = el('div', 'starters'); sr.appendChild(el('span', 'sl', 'Satzanfänge antippen:'));
+      t.starters.forEach(function (s) { var c = el('button', 'chip', esc(s)); c.onclick = function () { var v = ta.value; ta.value = (v && !/\s$/.test(v) ? v + ' ' : v) + s.replace(/ …$/, ' '); ta.oninput(); ta.focus(); }; sr.appendChild(c); });
+      box.appendChild(sr);
+    }
+    var ta = el('textarea'); ta.rows = t.rows || 4; ta.maxLength = t.max; ta.value = S.ans[t.id] || ''; ta.setAttribute('autocapitalize', 'sentences');
+    var cnt = el('div', 'count');
+    var mb = el('button', 'btn small', 'Mit Musterlösung vergleichen'); var model = el('div', 'model', '<b>Vergleiche:</b> ' + (t.model || ''));
+    model.hidden = true; mb.hidden = true;
+    mb.onclick = function () { model.hidden = !model.hidden; };
+    ta.oninput = function () {
+      S.ans[t.id] = ta.value; save();
+      var L = ta.value.trim().length;
+      cnt.textContent = L < t.min ? ('noch mindestens ' + (t.min - L) + ' Zeichen' + (t.optional ? ' (freiwillig)' : '')) : (L + ' / ' + t.max + ' Zeichen ✓');
+      cnt.classList.toggle('ok', L >= t.min);
+      mb.hidden = !t.model || L < t.min;
+      refreshNav();
+    };
+    box.appendChild(ta); box.appendChild(cnt);
+    if (t.model && !t.noModel) { box.appendChild(mb); box.appendChild(model); }
+    ta.oninput();
+    return box;
+  }
+  // geschlossene Aufgaben
+  var sel = (S.ans[t.id] || []).slice();
+  var body = el('div', 'body');
+  var check = el('button', 'btn small primary', 'Prüfen');
+  function locked() { return !!(S.res[t.id] && S.res[t.id].done); }
+  function mark(showWrong) {
+    var n = t.answer.length, good = 0;
+    body.querySelectorAll('[data-k]').forEach(function (node) {
+      var k = +node.getAttribute('data-k'); var ok = sel[k] === t.answer[k] || (t.type === 'mc' && sel[0] === t.answer[0]);
+      node.classList.remove('right', 'wrong');
+      if (showWrong || ok) node.classList.add(ok ? 'right' : 'wrong');
+    });
+  }
+  if (t.type === 'mc') {
+    t.options.forEach(function (o, k) {
+      var b = el('button', 'opt block' + (sel[0] === k ? ' sel' : ''), o); b.setAttribute('data-o', k);
+      b.onclick = function () { if (locked()) return; sel[0] = k; S.ans[t.id] = sel; save(); body.querySelectorAll('.opt').forEach(function (x, j) { x.classList.toggle('sel', j === k); x.classList.remove('wrong'); }); };
+      body.appendChild(b);
+    });
+  } else if (t.type === 'tf') {
+    t.items.forEach(function (it, k) {
+      var row = el('div', 'tfrow'); row.setAttribute('data-k', k);
+      row.appendChild(el('div', 'tft', it));
+      var g = el('div', 'seg');
+      [['richtig', true], ['falsch', false]].forEach(function (p) {
+        var b = el('button', 'opt' + (sel[k] === p[1] ? ' sel' : ''), p[0]);
+        b.onclick = function () { if (locked()) return; sel[k] = p[1]; S.ans[t.id] = sel; save(); g.querySelectorAll('button').forEach(function (x) { x.classList.remove('sel'); }); b.classList.add('sel'); row.classList.remove('wrong'); };
+        g.appendChild(b);
+      });
+      row.appendChild(g); body.appendChild(row);
+    });
+  } else if (t.type === 'gaps') {
+    var parts = t.text.split(/\{(\d+)\}/); var p = el('p', 'gaptext');
+    parts.forEach(function (s, j) {
+      if (j % 2 === 0) { p.appendChild(document.createTextNode(s)); return; }
+      var k = +s; var se = el('select'); se.setAttribute('data-k', k);
+      se.appendChild(el('option', null, '— auswählen —')).value = '';
+      // gemischte Reihenfolge, stabil
+      var order = t.gaps[k].map(function (_, x) { return x; }); var rot = (k * 2 + t.id.length) % order.length; order = order.slice(rot).concat(order.slice(0, rot));
+      order.forEach(function (x) { var op = el('option', null, esc(t.gaps[k][x])); op.value = x; se.appendChild(op); });
+      if (sel[k] != null) se.value = sel[k];
+      se.onchange = function () { if (locked()) { se.value = sel[k]; return; } sel[k] = se.value === '' ? null : +se.value; S.ans[t.id] = sel; save(); se.classList.remove('wrong'); };
+      p.appendChild(se);
+    });
+    body.appendChild(p);
+  } else if (t.type === 'assign') {
+    t.items.forEach(function (it, k) {
+      var row = el('div', 'asrow'); row.setAttribute('data-k', k);
+      row.appendChild(el('div', 'ast', it));
+      var g = el('div', 'seg wrap' + (t.cats.length > 2 ? ' many' : ''));
+      t.cats.forEach(function (c, ci) {
+        var b = el('button', 'opt' + (sel[k] === ci ? ' sel' : ''), c);
+        b.onclick = function () { if (locked()) return; sel[k] = ci; S.ans[t.id] = sel; save(); g.querySelectorAll('button').forEach(function (x) { x.classList.remove('sel'); }); b.classList.add('sel'); row.classList.remove('wrong'); };
+        g.appendChild(b);
+      });
+      row.appendChild(g); body.appendChild(row);
+    });
+  }
+  box.appendChild(body);
+  var foot = el('div', 'tfoot'); foot.appendChild(check); foot.appendChild(fb); box.appendChild(foot);
+  function evaluate() {
+    var n = t.answer.length;
+    for (var k = 0; k < n; k++) if (sel[k] == null) { fb.className = 'fb warn'; fb.innerHTML = 'Bitte zuerst alles beantworten.'; return; }
+    var good = 0; for (k = 0; k < n; k++) if (sel[k] === t.answer[k]) good++;
+    var rr = S.res[t.id] || { tries: 0 };
+    rr.tries++; if (rr.tries === 1) { rr.first = good; rr.n = n; }
+    if (t.type === 'mc') {
+      body.querySelectorAll('.opt').forEach(function (x, j) { x.classList.remove('right', 'wrong'); if (j === sel[0]) x.classList.add(good ? 'right' : 'wrong'); });
+    } else mark(true);
+    if (good === n) { rr.done = true; fb.className = 'fb good'; fb.innerHTML = '<b>Richtig!</b> ' + (t.feedback || ''); check.hidden = true; }
+    else if (rr.tries >= 2) { rr.done = true; fb.className = 'fb sol'; fb.innerHTML = '<b>Lösung:</b> ' + solution(t) + ' ' + (t.feedback || ''); check.hidden = true; showSolution(); }
+    else { fb.className = 'fb bad'; fb.innerHTML = '<b>' + good + ' von ' + n + ' richtig.</b> Die rot markierten Antworten stimmen noch nicht. Lies im Text nach und versuche es noch einmal.'; if (t.type === 'mc') fb.innerHTML = '<b>Noch nicht.</b> Lies im Text nach und versuche es noch einmal.'; }
+    setRes(rr);
+  }
+  function showSolution() {
+    if (t.type === 'mc') body.querySelectorAll('.opt').forEach(function (x, j) { if (j === t.answer[0]) x.classList.add('right'); });
+    else body.querySelectorAll('[data-k]').forEach(function (node) { var k = +node.getAttribute('data-k'); if (sel[k] !== t.answer[k]) node.classList.add('fixed'); });
+  }
+  check.onclick = evaluate;
+  if (r.done) {
+    check.hidden = true;
+    var good = 0; for (var k = 0; k < t.answer.length; k++) if (sel[k] === t.answer[k]) good++;
+    if (good === t.answer.length) { fb.className = 'fb good'; fb.innerHTML = '<b>Richtig!</b> ' + (t.feedback || ''); }
+    else { fb.className = 'fb sol'; fb.innerHTML = '<b>Lösung:</b> ' + solution(t) + ' ' + (t.feedback || ''); showSolution(); }
+    setTimeout(function () { if (t.type === 'mc') body.querySelectorAll('.opt').forEach(function (x, j) { if (j === sel[0]) x.classList.add(good ? 'right' : 'wrong'); }); else mark(true); }, 0);
+  }
+  return box;
+}
+function solution(t) {
+  if (t.type === 'mc') return '„' + t.options[t.answer[0]] + '“';
+  if (t.type === 'tf') return t.answer.map(function (a, k) { return (k + 1) + ' ' + (a ? 'richtig' : 'falsch'); }).join(' · ') + '.';
+  if (t.type === 'gaps') return t.answer.map(function (a, k) { return t.gaps[k][a]; }).join(' · ') + '.';
+  if (t.type === 'assign') return t.answer.map(function (a, k) { return (k + 1) + ' → ' + t.cats[a]; }).join(' · ') + '.';
+  return '';
+}
+
+function confirmBox(msg, yes) {
+  var ov = el('div', 'overlay'); var b = el('div', 'dlg');
+  b.appendChild(el('p', null, msg));
+  var row = el('div', 'nav'); var n = el('button', 'btn ghost', 'Abbrechen'); var y = el('button', 'btn primary', 'Ja, löschen');
+  n.onclick = function () { ov.remove(); }; y.onclick = function () { ov.remove(); yes(); };
+  row.appendChild(n); row.appendChild(y); b.appendChild(row); ov.appendChild(b); document.body.appendChild(ov);
+}
+
+/* ===== Abgabe per QR ===== */
+var TEXT_IDS = ['t1', 't2', 't3', 't4', 't5', 't6'];
+function closedTasks() { var a = []; STEPS.forEach(function (s) { (s.tasks || []).forEach(function (t) { if (['mc', 'tf', 'gaps', 'assign'].indexOf(t.type) >= 0) a.push(t); }); }); return a; }
+function payload() {
+  if (!S.t1) { S.t1 = Date.now(); save(); }
+  return {
+    v: 1, n: S.name, s: Math.round(S.t0 / 60000), e: Math.round(S.t1 / 60000),
+    sc: [S.ans.vor, S.ans.nach],
+    c: closedTasks().map(function (t) { var r = S.res[t.id] || {}; return [r.first == null ? -1 : r.first, t.answer.length, r.tries || 0]; }),
+    h: S.ans.h1 === true ? 1 : 0,
+    a: TEXT_IDS.map(function (id) { return (S.ans[id] || '').trim(); })
+  };
+}
+function b64u(bytes) { var s = ''; for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+function unb64u(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; var b = atob(s), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
+function pipe(bytes, stream) { return new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer().then(function (b) { return new Uint8Array(b); }); }
+function pack(obj) {
+  var raw = new TextEncoder().encode(JSON.stringify(obj));
+  if (typeof CompressionStream === 'function') {
+    return pipe(raw, new CompressionStream('deflate-raw')).then(function (z) { return 'z' + b64u(z); }).catch(function () { return 'u' + b64u(raw); });
+  }
+  return Promise.resolve('u' + b64u(raw));
+}
+function unpack(str) {
+  var bytes = unb64u(str.slice(1));
+  var p = str[0] === 'z' ? pipe(bytes, new DecompressionStream('deflate-raw')) : Promise.resolve(bytes);
+  return p.then(function (b) { return JSON.parse(new TextDecoder().decode(b)); });
+}
+function baseUrl() { return location.href.split('#')[0]; }
+
+function renderAbgabe(card) {
+  var c = el('div', 'content');
+  var missing = contentSteps().filter(function (s) { return !stepDone(s); });
+  if (missing.length) {
+    c.innerHTML = '<p class="note">Es fehlen noch Aufgaben in: ' + missing.map(function (s) { return esc(s.title); }).join(', ') + '.</p>';
+    card.appendChild(c);
+    var nav0 = el('div', 'nav'); var bk = el('button', 'btn primary', 'Zurück zu den Aufgaben');
+    bk.onclick = function () { go(STEPS.indexOf(missing[0])); }; nav0.appendChild(bk); card.appendChild(nav0); return;
+  }
+  c.innerHTML = '<p class="lead">Fertig, <b>' + esc(S.name) + '</b>! Zeige diesen QR-Code deiner Lehrkraft. Erst wenn er gescannt ist, ist deine Arbeit abgegeben.</p>';
+  var qbox = el('div', 'qr', '<p class="note">QR-Code wird erstellt …</p>');
+  c.appendChild(qbox);
+  card.appendChild(c);
+  pack(payload()).then(function (code) {
+    var url = baseUrl() + '#r=' + code;
+    try { qbox.innerHTML = QR.svg(url); }
+    catch (e) {
+      // Notlösung (sehr alte iPad-Software ohne Komprimierung): Zusammenfassung zum Abfotografieren
+      var p = payload(), h = '<p class="note">Der QR-Code konnte auf diesem iPad nicht erstellt werden. Zeige diese Seite deiner Lehrkraft – sie fotografiert sie ab.</p><div class="answer"><b>' + esc(S.name) + '</b> · Wissensaufgaben: ' + closedScore(p).g + ' / ' + closedScore(p).n + '</div>';
+      OPEN.forEach(function (o, i) { if (p.a[i]) h += '<div class="answer"><b>' + esc(o.label) + ':</b> ' + esc(p.a[i]) + '</div>'; });
+      qbox.innerHTML = h; return;
+    }
+    qbox.appendChild(el('div', 'qrcap', esc(S.name) + ' · ' + new Date().toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' })));
+  });
+  var nav = el('div', 'nav');
+  var back = el('button', 'btn ghost', 'Antworten ansehen'); back.onclick = function () { go(1); };
+  var del = el('button', 'btn ghost', 'Nach dem Scannen: iPad freigeben');
+  del.onclick = function () { confirmBox('Wurde dein QR-Code gescannt? Dann werden deine Antworten jetzt von diesem iPad gelöscht.', function () { S = fresh(); save(); try { localStorage.removeItem(KEY); } catch (e) {} render(); }); };
+  nav.appendChild(back); nav.appendChild(el('span', 'navhint')); nav.appendChild(del);
+  card.appendChild(nav);
+}
+
+/* ===== Lehrkraft-Ansicht ===== */
+var LK = 'gams-kl10-zwei-fenster-lk';
+function lkLoad() { try { return JSON.parse(localStorage.getItem(LK) || '[]'); } catch (e) { return []; } }
+function lkSave(l) { try { localStorage.setItem(LK, JSON.stringify(l)); } catch (e) {} }
+var OPEN = [
+  { id: 't1', label: 'Einstieg: erste Begründung', pts: 0 },
+  { id: 't2', label: 'Beleg erklären', pts: 2, eh: 'Beleg korrekt benannt (1) und Zusammenhang zur Theorie erklärt (1). Z. B. Hintergrundstrahlung als Spur des frühen heißen Universums; Fossilien zeigen Veränderung über lange Zeiträume.' },
+  { id: 't3', label: 'Bild Gottes – Folge', pts: 2, eh: 'Würde jedes Menschen / Gleichwertigkeit (1); konkrete Folge für den Umgang, z. B. Respekt, kein Mobbing, Schutz Schwacher, Verantwortung für die Schöpfung (1).' },
+  { id: 't4', label: 'Dialog ergänzen', pts: 2, eh: 'Argument: verschiedene Fragen/Ebenen (Wie? vs. Warum/Wozu?) oder Gen 1 als Glaubenstext (1); sachlich korrekt und auf Lea bezogen (1).' },
+  { id: 't5', label: 'Stellungnahme', pts: 4, eh: 'Position klar (1); Argument 1 mit Fachbegriff (1); Argument 2 mit Quelle (1); Fazit/Folgerichtigkeit (1). Bewertet wird die Begründung, nicht die Meinung.' },
+  { id: 't6', label: 'Zusatz: Ratzinger-Beispiel', pts: 0, eh: 'Eigenes Beispiel, das Wie-Frage (Entwicklung) und Dass-/Warum-Frage (Existenz überhaupt) trennt.' }
+];
+function closedLabel(t) { return t.lab; }
+function fmtMin(m) { return new Date(m * 60000).toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' }); }
+function scaleTxt(k) { return k == null ? '–' : ['stimme zu', 'eher zu', 'eher nicht zu', 'stimme nicht zu'][k]; }
+function closedScore(r) { var g = 0, n = 0; (r.c || []).forEach(function (x) { if (x[0] >= 0) { g += x[0]; } n += x[1]; }); return { g: g, n: n }; }
+
+function teacher(code) {
+  document.body.classList.add('lkmode');
+  var app = $('#app'); app.innerHTML = '<section class="card"><p class="note">Ergebnis wird geladen …</p></section>';
+  unpack(code).then(function (r) {
+    var l = lkLoad(); var key = r.n + '|' + r.e;
+    var exist = l.filter(function (x) { return x.k === key; })[0];
+    if (!exist) { l.push({ k: key, r: r, pts: {} }); lkSave(l); exist = l[l.length - 1]; }
+    history.replaceState(null, '', baseUrl() + '#lk=' + encodeURIComponent(key));
+    showStudent(exist);
+  }).catch(function () { app.innerHTML = '<section class="card"><h2>Code nicht lesbar</h2><p>Der QR-Code konnte nicht gelesen werden. Bitte noch einmal scannen.</p></section>'; });
+}
+function showStudent(entry) {
+  var r = entry.r, app = $('#app'); app.innerHTML = '';
+  var card = el('section', 'card');
+  card.appendChild(el('div', 'kicker', 'Lehrkraft · Abgabe gespeichert auf diesem Gerät'));
+  card.appendChild(el('h2', null, esc(r.n)));
+  var sc = closedScore(r);
+  card.appendChild(el('p', 'meta', 'Begonnen ' + fmtMin(r.s) + ' · abgegeben ' + fmtMin(r.e) + ' · Dauer ' + Math.max(0, r.e - r.s) + ' Min. · Hefteintrag übertragen: ' + (r.h ? 'ja' : 'nein') +
+    '<br>Einschätzung der Behauptung: vorher <b>' + scaleTxt(r.sc[0]) + '</b> → nachher <b>' + scaleTxt(r.sc[1]) + '</b>'));
+  var t = el('table', 'res'); t.innerHTML = '<tr><th>Geschlossene Aufgabe</th><th>1. Versuch</th><th>Versuche</th></tr>';
+  closedTasks().forEach(function (task, i) { var x = r.c[i] || [-1, task.answer.length, 0]; t.innerHTML += '<tr><td>' + esc(closedLabel(task)) + '</td><td class="' + (x[0] === x[1] ? 'ok' : x[0] / x[1] >= .5 ? 'mid' : 'low') + '">' + Math.max(0, x[0]) + ' / ' + x[1] + '</td><td>' + x[2] + '</td></tr>'; });
+  t.innerHTML += '<tr class="sum"><td>Summe (Wissensaufgaben, 1. Versuch)</td><td>' + sc.g + ' / ' + sc.n + '</td><td></td></tr>';
+  card.appendChild(t);
+  var tot = 0, max = 0;
+  OPEN.forEach(function (o, i) {
+    var ans = r.a[i] || '';
+    var b = el('div', 'task');
+    b.appendChild(el('div', 'q', esc(o.label) + (o.pts ? ' <span class="pts">(' + o.pts + ' P.)</span>' : '')));
+    b.appendChild(el('div', 'answer', ans ? esc(ans).replace(/\n/g, '<br>') : '<i>keine Antwort</i>'));
+    if (o.eh) b.appendChild(el('div', 'eh', '<b>Erwartungshorizont:</b> ' + o.eh));
+    if (o.pts) {
+      max += o.pts; var row = el('div', 'seg pts');
+      for (var p = 0; p <= o.pts; p++) (function (p) {
+        var btn = el('button', 'opt' + (entry.pts[o.id] === p ? ' sel' : ''), p + ' P.');
+        btn.onclick = function () { entry.pts[o.id] = p; var l = lkLoad(); l.forEach(function (x) { if (x.k === entry.k) x.pts = entry.pts; }); lkSave(l); showStudent(entry); };
+        row.appendChild(btn);
+      })(p);
+      b.appendChild(row);
+      if (entry.pts[o.id] != null) tot += entry.pts[o.id];
+    }
+    card.appendChild(b);
+  });
+  card.appendChild(el('p', 'meta', '<b>Offene Aufgaben:</b> ' + tot + ' / ' + max + ' P. (optional – nur wenn du bewerten möchtest)'));
+  var nav = el('div', 'nav noprint');
+  var all = el('button', 'btn ghost', 'Alle Abgaben (Klassenliste)'); all.onclick = function () { location.hash = '#lk'; };
+  var pr = el('button', 'btn primary', 'Drucken / als PDF'); pr.onclick = function () { window.print(); };
+  nav.appendChild(all); nav.appendChild(el('span', 'navhint')); nav.appendChild(pr); card.appendChild(nav);
+  app.appendChild(card); window.scrollTo(0, 0);
+}
+function classList() {
+  document.body.classList.add('lkmode');
+  var l = lkLoad(), app = $('#app'); app.innerHTML = '';
+  var card = el('section', 'card');
+  card.appendChild(el('div', 'kicker', 'Lehrkraft · gespeichert nur auf diesem Gerät'));
+  card.appendChild(el('h2', null, 'Abgaben: Zwei Fenster zur Wirklichkeit'));
+  if (!l.length) { card.appendChild(el('p', null, 'Noch keine Abgaben auf diesem Gerät. Scanne die QR-Codes der Schülerinnen und Schüler mit der Kamera dieses Geräts.')); app.appendChild(card); return; }
+  var t = el('table', 'res');
+  t.innerHTML = '<tr><th>Name</th><th>Abgabe</th><th>Min.</th><th>Wissen (1. Versuch)</th><th>Offen</th><th>vorher → nachher</th></tr>';
+  l.forEach(function (x, i) {
+    var r = x.r, sc = closedScore(r), op = 0, has = 0; OPEN.forEach(function (o) { if (x.pts[o.id] != null) { op += x.pts[o.id]; has++; } });
+    var tr = el('tr', 'link'); tr.innerHTML = '<td>' + esc(r.n) + '</td><td>' + fmtMin(r.e) + '</td><td>' + Math.max(0, r.e - r.s) + '</td><td>' + sc.g + ' / ' + sc.n + '</td><td>' + (has ? op + ' P.' : '–') + '</td><td>' + scaleTxt(r.sc[0]) + ' → ' + scaleTxt(r.sc[1]) + '</td>';
+    tr.onclick = function () { showStudent(x); }; t.appendChild(tr);
+  });
+  card.appendChild(t);
+  // Diagnose
+  card.appendChild(el('h3', 'mt', 'Diagnose: Wo hakt es? (Anteil richtig im 1. Versuch)'));
+  var d = el('table', 'res');
+  closedTasks().forEach(function (task, i) {
+    var g = 0, n = 0; l.forEach(function (x) { var c = x.r.c[i]; if (c && c[0] >= 0) { g += c[0]; n += c[1]; } });
+    var pc = n ? Math.round(g / n * 100) : 0;
+    d.innerHTML += '<tr><td>' + esc(closedLabel(task)) + '</td><td class="barcell"><span class="hb" style="width:' + pc + '%"></span> ' + pc + ' %</td></tr>';
+  });
+  card.appendChild(d);
+  var nav = el('div', 'nav noprint');
+  var csv = el('button', 'btn ghost', 'CSV exportieren');
+  csv.onclick = function () {
+    var rows = [['Name', 'Beginn', 'Abgabe', 'Minuten', 'Wissen_richtig', 'Wissen_max', 'Offen_Punkte', 'Vorher', 'Nachher', 'Hefteintrag'].concat(OPEN.map(function (o) { return o.label; }))];
+    l.forEach(function (x) { var r = x.r, sc = closedScore(r), op = 0; OPEN.forEach(function (o) { if (x.pts[o.id] != null) op += x.pts[o.id]; });
+      rows.push([r.n, fmtMin(r.s), fmtMin(r.e), r.e - r.s, sc.g, sc.n, op, scaleTxt(r.sc[0]), scaleTxt(r.sc[1]), r.h ? 'ja' : 'nein'].concat(r.a)); });
+    var s = '﻿' + rows.map(function (rw) { return rw.map(function (v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; }).join(';'); }).join('\r\n');
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([s], { type: 'text/csv' })); a.download = 'KR10_Zwei_Fenster_Abgaben.csv'; document.body.appendChild(a); a.click(); a.remove();
+  };
+  var pr = el('button', 'btn ghost', 'Drucken'); pr.onclick = function () { window.print(); };
+  var del = el('button', 'btn ghost', 'Liste leeren'); del.onclick = function () { confirmBox('Alle gespeicherten Abgaben auf diesem Gerät löschen?', function () { lkSave([]); classList(); }); };
+  nav.appendChild(csv); nav.appendChild(pr); nav.appendChild(el('span', 'navhint')); nav.appendChild(del);
+  card.appendChild(nav); app.appendChild(card);
+}
+
+/* ===== Start ===== */
+function route() {
+  var h = location.hash;
+  if (h.indexOf('#r=') === 0) return teacher(h.slice(3));
+  if (h.indexOf('#lk=') === 0) { var k = decodeURIComponent(h.slice(4)); var e = lkLoad().filter(function (x) { return x.k === k; })[0]; return e ? showStudent(e) : classList(); }
+  if (h === '#lk') return classList();
+  document.body.classList.remove('lkmode');
+  render();
+}
+window.addEventListener('hashchange', route);
+route();
+
+</script>
+</body>
+</html>
