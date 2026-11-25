@@ -94,6 +94,16 @@ footer{position:fixed;left:0;right:0;bottom:0;background:rgba(247,243,234,.97);b
 .toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);max-width:560px;width:calc(100% - 36px);background:var(--ink);color:#fff;border-radius:12px;padding:12px 16px;font-size:16px;display:none;z-index:10}
 .toast.on{display:block}
 .toast b{color:#f0d79a}
+.qr{display:flex;flex-direction:column;align-items:center;margin:12px 0}
+.qr svg{width:min(88vw,620px);height:auto;border:1px solid var(--line);border-radius:8px}
+.qrcap{margin-top:8px;font-weight:600}
+#lk{display:none;max-width:980px;margin:0 auto;padding:22px 18px 60px}
+body.lkmode #lk{display:block} body.lkmode main,body.lkmode footer,body.lkmode .stations,body.lkmode .bar{display:none}
+td.ok{color:var(--ok);font-weight:600} td.mid{color:#8a6a1d;font-weight:600} td.low{color:var(--bad);font-weight:600}
+tr.sum td{font-weight:700} tr.link{cursor:pointer} tr.link:hover{background:#faf6ec}
+.hb{display:inline-block;height:12px;background:var(--gold);border-radius:3px;vertical-align:middle;margin-right:6px}
+#lk .a{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:4px 0 10px}
+.printonly{display:none}
 .res h3{margin-top:18px}
 .res .a{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:4px 0 10px;min-height:20px}
 .res .q{font-size:15px;color:var(--muted)}
@@ -106,6 +116,10 @@ footer{position:fixed;left:0;right:0;bottom:0;background:rgba(247,243,234,.97);b
   .res .btns{display:none}
   body{background:#fff;font-size:12pt}
   main{padding:0}
+  .noprint{display:none!important}
+  .printonly{display:block!important}
+  body.lkmode main{display:none!important}
+  #lk .card{break-inside:avoid}
 }
 </style>
 </head>
@@ -118,6 +132,7 @@ footer{position:fixed;left:0;right:0;bottom:0;background:rgba(247,243,234,.97);b
   <div class="bar"><i id="bar"></i></div>
 </header>
 <main id="main"></main>
+<div id="lk"></div>
 <footer>
   <div class="nav">
     <button class="btn ghost" id="prev">Zurück</button>
@@ -128,6 +143,97 @@ footer{position:fixed;left:0;right:0;bottom:0;background:rgba(247,243,234,.97);b
 <div class="toast" id="toast"></div>
 
 <script>
+// Minimal QR encoder (byte mode, ECC L), after Nayuki's reference algorithm. Returns boolean[][] (true = dark).
+var QR = (function () {
+  var ECC = [-1, 7, 10, 15, 20, 26, 18, 20, 24, 30, 18, 20, 24, 26, 30, 22, 24, 28, 30, 28, 28, 28, 28, 30, 30, 26, 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30];
+  var BLK = [-1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 4, 6, 6, 6, 6, 7, 8, 8, 9, 9, 10, 12, 12, 12, 13, 14, 15, 16, 17, 18, 19, 19, 20, 21, 22, 24, 25];
+  function rawMods(v) { var r = (16 * v + 128) * v + 64; if (v >= 2) { var n = Math.floor(v / 7) + 2; r -= (25 * n - 10) * n - 55; if (v >= 7) r -= 36; } return r; }
+  function dataCw(v) { return Math.floor(rawMods(v) / 8) - ECC[v] * BLK[v]; }
+  function mul(x, y) { var z = 0; for (var i = 7; i >= 0; i--) { z = (z << 1) ^ ((z >>> 7) * 0x11D); z ^= ((y >>> i) & 1) * x; } return z & 255; }
+  function rsDiv(d) { var r = []; for (var i = 0; i < d; i++) r.push(0); r[d - 1] = 1; var root = 1; for (i = 0; i < d; i++) { for (var j = 0; j < d; j++) { r[j] = mul(r[j], root); if (j + 1 < d) r[j] ^= r[j + 1]; } root = mul(root, 2); } return r; }
+  function rsRem(data, div) { var r = div.map(function () { return 0; }); data.forEach(function (b) { var f = b ^ r.shift(); r.push(0); div.forEach(function (c, i) { r[i] ^= mul(c, f); }); }); return r; }
+  function alignPos(v) { if (v == 1) return []; var n = Math.floor(v / 7) + 2; var step = Math.floor((v * 8 + n * 3 + 5) / (n * 4 - 4)) * 2; var res = [6]; for (var p = v * 4 + 10; res.length < n; p -= step) res.splice(1, 0, p); return res; }
+  function encode(bytes, forceMask) {
+    var v, cap;
+    for (v = 1; v <= 40; v++) { cap = dataCw(v) * 8; var need = 4 + (v < 10 ? 8 : 16) + bytes.length * 8; if (need <= cap) break; }
+    if (v > 40) throw new Error('Daten zu lang für QR');
+    var bits = [];
+    function put(val, len) { for (var i = len - 1; i >= 0; i--) bits.push((val >>> i) & 1); }
+    put(4, 4); put(bytes.length, v < 10 ? 8 : 16); bytes.forEach(function (b) { put(b, 8); });
+    put(0, Math.min(4, cap - bits.length)); put(0, (8 - bits.length % 8) % 8);
+    for (var pad = 0xEC; bits.length < cap; pad ^= 0xEC ^ 0x11) put(pad, 8);
+    var data = []; for (var i = 0; i < bits.length; i += 8) { var b = 0; for (var k = 0; k < 8; k++) b = (b << 1) | bits[i + k]; data.push(b); }
+    // ECC + interleave
+    var nb = BLK[v], el = ECC[v], raw = Math.floor(rawMods(v) / 8), nShort = nb - raw % nb, sLen = Math.floor(raw / nb);
+    var blocks = [], div = rsDiv(el), p = 0;
+    for (i = 0; i < nb; i++) { var dat = data.slice(p, p + sLen - el + (i < nShort ? 0 : 1)); p += dat.length; var ec = rsRem(dat, div); if (i < nShort) dat.push(0); blocks.push(dat.concat(ec)); }
+    var cw = [];
+    for (i = 0; i < blocks[0].length; i++) for (var j = 0; j < nb; j++) if (i != sLen - el || j >= nShort) cw.push(blocks[j][i]);
+    // matrix
+    var size = v * 4 + 17, M = [], F = [];
+    for (i = 0; i < size; i++) { M.push(new Array(size).fill(false)); F.push(new Array(size).fill(false)); }
+    function sf(x, y, d) { M[y][x] = d; F[y][x] = true; }
+    for (i = 0; i < size; i++) { sf(6, i, i % 2 == 0); sf(i, 6, i % 2 == 0); }
+    [[3, 3], [size - 4, 3], [3, size - 4]].forEach(function (c) {
+      for (var dy = -4; dy <= 4; dy++) for (var dx = -4; dx <= 4; dx++) { var x = c[0] + dx, y = c[1] + dy; if (x >= 0 && x < size && y >= 0 && y < size) { var dist = Math.max(Math.abs(dx), Math.abs(dy)); sf(x, y, dist != 2 && dist != 4); } }
+    });
+    var ap = alignPos(v), na = ap.length;
+    for (i = 0; i < na; i++) for (j = 0; j < na; j++) {
+      if ((i == 0 && j == 0) || (i == 0 && j == na - 1) || (i == na - 1 && j == 0)) continue;
+      for (var dy = -2; dy <= 2; dy++) for (var dx = -2; dx <= 2; dx++) sf(ap[i] + dx, ap[j] + dy, Math.max(Math.abs(dx), Math.abs(dy)) != 1);
+    }
+    function drawFormat(mask) {
+      var d = (1 << 3) | mask, r = d; for (var i = 0; i < 10; i++) r = (r << 1) ^ ((r >>> 9) * 0x537);
+      var b = ((d << 10) | r) ^ 0x5412; function g(i) { return ((b >>> i) & 1) != 0; }
+      for (i = 0; i <= 5; i++) sf(8, i, g(i)); sf(8, 7, g(6)); sf(8, 8, g(7)); sf(7, 8, g(8));
+      for (i = 9; i < 15; i++) sf(14 - i, 8, g(i));
+      for (i = 0; i < 8; i++) sf(size - 1 - i, 8, g(i));
+      for (i = 8; i < 15; i++) sf(8, size - 15 + i, g(i));
+      sf(8, size - 8, true);
+    }
+    drawFormat(0);
+    if (v >= 7) { var r = v; for (i = 0; i < 12; i++) r = (r << 1) ^ ((r >>> 11) * 0x1F25); var vb = (v << 12) | r;
+      for (i = 0; i < 18; i++) { var bit = ((vb >>> i) & 1) != 0, a = size - 11 + i % 3, bb = Math.floor(i / 3); sf(a, bb, bit); sf(bb, a, bit); } }
+    // codewords
+    var idx = 0;
+    for (var right = size - 1; right >= 1; right -= 2) {
+      if (right == 6) right = 5;
+      for (var vert = 0; vert < size; vert++) for (j = 0; j < 2; j++) {
+        var x = right - j, up = ((right + 1) & 2) == 0, y = up ? size - 1 - vert : vert;
+        if (!F[y][x] && idx < cw.length * 8) { M[y][x] = ((cw[idx >>> 3] >>> (7 - (idx & 7))) & 1) != 0; idx++; }
+      }
+    }
+    function applyMask(m) {
+      for (var y = 0; y < size; y++) for (var x = 0; x < size; x++) {
+        if (F[y][x]) continue; var inv;
+        switch (m) { case 0: inv = (x + y) % 2 == 0; break; case 1: inv = y % 2 == 0; break; case 2: inv = x % 3 == 0; break; case 3: inv = (x + y) % 3 == 0; break;
+          case 4: inv = (Math.floor(x / 3) + Math.floor(y / 2)) % 2 == 0; break; case 5: inv = x * y % 2 + x * y % 3 == 0; break;
+          case 6: inv = (x * y % 2 + x * y % 3) % 2 == 0; break; default: inv = ((x + y) % 2 + x * y % 3) % 2 == 0; }
+        if (inv) M[y][x] = !M[y][x];
+      }
+    }
+    function penalty() {
+      var s = 0, dark = 0;
+      for (var y = 0; y < size; y++) { var run = 1; for (var x = 0; x < size; x++) { if (M[y][x]) dark++; if (x > 0) { if (M[y][x] == M[y][x - 1]) { run++; if (run == 5) s += 3; else if (run > 5) s++; } else run = 1; } } }
+      for (var x2 = 0; x2 < size; x2++) { var run2 = 1; for (var y2 = 1; y2 < size; y2++) { if (M[y2][x2] == M[y2 - 1][x2]) { run2++; if (run2 == 5) s += 3; else if (run2 > 5) s++; } else run2 = 1; } }
+      for (y = 0; y < size - 1; y++) for (x = 0; x < size - 1; x++) { var c = M[y][x]; if (c == M[y][x + 1] && c == M[y + 1][x] && c == M[y + 1][x + 1]) s += 3; }
+      s += Math.floor(Math.abs(dark * 20 - size * size * 10) / (size * size)) * 10;
+      return s;
+    }
+    var best = 0, bestP = Infinity;
+    for (var m = 0; m < 8; m++) { applyMask(m); drawFormat(m); var pp = penalty(); if (pp < bestP) { bestP = pp; best = m; } applyMask(m); }
+    if (forceMask !== undefined) best = forceMask; applyMask(best); drawFormat(best);
+    return M;
+  }
+  function svg(text) {
+    var bytes = Array.from(new TextEncoder().encode(text));
+    var M = encode(bytes), n = M.length, q = 4, d = '';
+    for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) if (M[y][x]) d += 'M' + (x + q) + ',' + (y + q) + 'h1v1h-1z';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + (n + 2 * q) + ' ' + (n + 2 * q) + '" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="#fff"/><path d="' + d + '" fill="#000"/></svg>';
+  }
+  return { encode: encode, svg: svg };
+})();
+
 /* ---------- Glossar ---------- */
 const GLOSS={
   "Bundestag":"Das Parlament Deutschlands in Berlin. Die gewählten Abgeordneten beschließen dort die Gesetze.",
@@ -165,9 +271,9 @@ const SLIDES=[
   <h1>Die Zehn Gebote</h1>
   <p style="font-size:21px;font-family:var(--serif)">Gebot, Gesetz und das Gebot der Liebe</p>
   <div class="card">
-   <p class="task">Vorname oder Kürzel <span class="hint">(freiwillig)</span></p>
+   <p class="task">Vorname oder Kürzel <span class="hint">(für die Abgabe)</span></p>
    <input type="text" id="name" placeholder="z. B. Anna oder A. K." autocomplete="off">
-   <p class="hint" style="margin-top:8px">Nur für deinen Ausdruck am Ende. Deine Antworten bleiben auf diesem iPad und werden nirgendwohin gesendet. Auf einem Schul-iPad: am Ende auf „Alles löschen“ tippen.</p>
+   <p class="hint" style="margin-top:8px">Für deinen Ausdruck und für die Abgabe per QR-Code. Deine Antworten bleiben auf diesem iPad und werden nicht ins Internet hochgeladen.</p>
   </div>
  </div>
  <svg viewBox="0 0 320 260" role="img" aria-label="Zwei Gesetzestafeln vor einem Berg">
@@ -193,7 +299,7 @@ const SLIDES=[
   <li>Du gehst allein durch fünf Stationen. Lies jeden Text genau, tippe auf <span class="g" style="cursor:default">blaue Wörter</span>, wenn du sie nicht kennst.</li>
   <li>Bei Sortier- und Auswahlaufgaben drückst du <b>Prüfen</b> und bekommst sofort eine Rückmeldung.</li>
   <li>Bei Schreibaufgaben schreibst du <b>zuerst selbst</b>. Danach kannst du mit der Musterlösung vergleichen und deine Antwort verbessern.</li>
-  <li>Am Ende siehst du alle deine Ergebnisse. Dann vergleichst du mit deinem Partner und wir sichern alles in der Mindmap.</li>
+  <li>Am Ende siehst du alle deine Ergebnisse und vergleichst mit deinem Partner. Danach erscheint ein <b>QR-Code</b>: Den scannt deine Lehrkraft – so ist deine Arbeit abgegeben.</li>
  </ul>
 </div>`},
 
@@ -458,13 +564,16 @@ blocks:[{t:'items',id:'quiz',q:'Wähle jeweils die richtige Antwort und drücke 
  ]},
  {t:'write',id:'mitnehmen',q:'Was nehme ich aus dieser Stunde mit? Ein Satz.',min:15,rows:2,model:'z. B. Gebote sind keine Strafgesetze, sondern ein Weg, den Gott mir zeigt – und alles hängt an der Liebe zu Gott und zum Nächsten.'}]},
 
-{s:6,res:true}
+{s:6,res:true},
+{s:6,abg:true}
 ];
 
 /* ---------- Zustand ---------- */
 const KEY='zehngebote-kl8-v1';
-let S={name:'',w:{},c:{},sc:{},i:0};
+const fresh=()=>({name:'',w:{},c:{},sc:{},first:{},tries:{},t0:0,t1:0,i:0});
+let S=fresh();
 try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}
+S.first=S.first||{};S.tries=S.tries||{};
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 
 /* ---------- Rendern ---------- */
@@ -501,6 +610,7 @@ function renderItems(b){
 function build(){
   main.innerHTML=SLIDES.map((sl,i)=>{
     if(sl.res) return `<section class="slide res" id="sl-${i}" data-i="${i}"></section>`;
+    if(sl.abg) return `<section class="slide abg" id="sl-${i}" data-i="${i}"></section>`;
     let h=sl.html||'';
     (sl.blocks||[]).forEach(b=>{h+=b.t==='write'?renderWrite(b):b.t==='items'?renderItems(b):b.html;});
     return `<section class="slide" id="sl-${i}" data-i="${i}">${h}</section>`;
@@ -521,6 +631,7 @@ function check(id,silent){
     if(okA(it.a,sel[k])){ok++;el.classList.add('ok');}else el.classList.add('bad');
   });
   const answered=Object.keys(sel).length;
+  if(!silent){S.tries[id]=(S.tries[id]||0)+1;if(S.first[id]==null&&answered===b.items.length)S.first[id]=ok;}
   S.sc[id]=[ok,b.items.length];save();
   const sc=document.getElementById('sc-'+id);
   sc.textContent=`${ok} von ${b.items.length} richtig`+(answered<b.items.length?` · ${b.items.length-answered} noch offen`:'')+(ok===b.items.length?' – sehr gut!':(answered===b.items.length?' · Ändere die roten und prüfe noch einmal.':''));
@@ -560,7 +671,7 @@ function renderResults(){
   };
   const r=document.getElementById('reset');let armed=false;
   r.onclick=()=>{if(!armed){armed=true;r.textContent='Wirklich alles löschen? Noch einmal tippen.';setTimeout(()=>{armed=false;r.textContent='Alles löschen und neu beginnen';},4000);return;}
-    S={name:'',w:{},c:{},sc:{},i:0};save();build();go(0);};
+    S=fresh();save();build();go(0);};
 }
 
 /* ---------- Navigation ---------- */
@@ -575,9 +686,11 @@ function updateStations(){
 function go(i){
   S.i=Math.max(0,Math.min(SLIDES.length-1,i));save();
   document.querySelectorAll('.slide').forEach(s=>s.classList.toggle('on',+s.dataset.i===S.i));
+  if(!S.t0&&S.i>0){S.t0=Date.now();save();}
   if(SLIDES[S.i].res) renderResults();
+  if(SLIDES[S.i].abg) renderAbgabe(false);
   document.getElementById('prev').disabled=S.i===0;
-  const nx=document.getElementById('next');nx.textContent=S.i===SLIDES.length-2?'Zu meinen Ergebnissen':(S.i===SLIDES.length-1?'Fertig':'Weiter');nx.disabled=S.i===SLIDES.length-1;
+  const nx=document.getElementById('next');nx.textContent=S.i===SLIDES.length-3?'Zu meinen Ergebnissen':S.i===SLIDES.length-2?'Zur Abgabe (QR-Code)':(S.i===SLIDES.length-1?'Fertig':'Weiter');nx.disabled=S.i===SLIDES.length-1;
   document.getElementById('count').textContent=`${S.i+1} / ${SLIDES.length}`;
   document.getElementById('bar').style.width=(S.i/(SLIDES.length-1)*100)+'%';
   updateStations();window.scrollTo({top:0,behavior:'instant'in window?'instant':'auto'});
@@ -603,7 +716,168 @@ document.getElementById('prev').onclick=()=>go(S.i-1);
 document.getElementById('next').onclick=()=>{
   go(S.i+1);};
 
-build();go(S.i||0);
+
+/* ---------- Abgabe per QR (wie Kl. 10) ---------- */
+const OPEN={
+ einstieg:{l:'Einstieg: Unterschied Gesetz/Gebot (Vermutung)',p:0},
+ s1a2b:{l:'St. 1: Begründung Gesetz/Gebot/beides',p:1,eh:'Zuordnung mit stimmiger Begründung (Taten vs. Gedanken, Staat vs. Gott).'},
+ tim:{l:'St. 1: Hat Tim recht?',p:3,eh:'Position „nur teilweise“ (1); Gesetze regeln nur Taten/das Mindeste, Gebote fragen nach dem Herzen (1); eigenes passendes Beispiel, z. B. ausgrenzen, auslachen (1).'},
+ s1a4:{l:'St. 1 Zusatz: Warum bestraft der Staat keinen Neid?',p:0,eh:'Staat sieht keine Gedanken; Glaubensfreiheit Art. 4 GG.'},
+ s2a2:{l:'St. 2: Warum ähnliche Regeln?',p:2,eh:'Gemeinschaft braucht Regeln zum Zusammenleben (1); Schutz von Leben/Eigentum oder Gewissen als Begründung (1).'},
+ s2a3:{l:'St. 2: Ex 20,2 – warum gibt Gott Gebote?',p:2,eh:'Gott hat zuerst befreit, Gebote bewahren die Freiheit (1); ohne den Satz bloße Befehle, Gehorsam aus Angst statt Dankbarkeit (1).'},
+ s3oben:{l:'St. 3: Beispiel Liebe nach oben',p:1,eh:'Passendes Beispiel (beten, danken, Gottesdienst).'},
+ s3seite:{l:'St. 3: Beispiel Liebe zur Seite',p:1,eh:'Passendes Beispiel (helfen, zuhören, verzeihen).'},
+ s3mich:{l:'St. 3: Beispiel Liebe zu mir',p:1,eh:'Passendes Beispiel (auf mich achten, mich nicht schlechtmachen).'},
+ s3a3:{l:'St. 3: Bild vom „Hängen“',p:2,eh:'Passender Alltagsvergleich (1); Bezug: ohne Liebe werden Gebote leere Regeln (1).'},
+ lena:{l:'St. 3: Lena und 1 Joh 4,20',p:2,eh:'Wer den Nächsten hasst/ignoriert, kann nicht sagen, er liebe Gott (1); Folgerung für Lena: auf die Nachbarin zugehen (1).'},
+ experte:{l:'St. 2+3: Zusammenfassung in 3 Sätzen',p:3,eh:'Gott gibt die Gebote nach der Befreiung (1); Doppelgebot richtig wiedergegeben (1); 1–3 Gott, 4–10 Nächster (1).'},
+ s4eigen:{l:'St. 4: Drei Gebote in eigenen Worten',p:3,eh:'Je sinngemäß richtige Umschreibung mit passender Nummer (je 1).'},
+ s4a2:{l:'St. 4: Welt ohne Gebote',p:2,eh:'Zwei sinnvolle Folgen zu zwei Geboten (je 1).'},
+ s4a3:{l:'St. 4: Schwerstes Gebot heute',p:2,eh:'Gebot benannt (1); Begründung mit konkreter Situation (1). Gewertet wird die Begründung.'},
+ s5a2:{l:'St. 5: Fall – richtig handeln, wiedergutmachen',p:3,eh:'Gebot richtig benannt (1); Begründung mit Doppelgebot (1); konkrete Wiedergutmachung (1).'},
+ s5a3:{l:'St. 5 Zusatz: Eigener Fall',p:0,eh:'Klare Situation, passende Gebotsnummer.'},
+ mitnehmen:{l:'Abschluss: Was nehme ich mit?',p:0}
+};
+const ITEMNAMES={s1a1:'St. 1 · Gesetz oder Gebot – sortieren',s1a2:'St. 1 · Gesetz, Gebot oder beides',s2a1:'St. 2 · Hammurabi oder Zehn Gebote',s3a1:'St. 3 · Herkunft des Doppelgebots',s3a2:'St. 3 · Drei Richtungen der Liebe',s3a4:'St. 3 · Zwei Tafeln',s4a1:'St. 4 · Gebote in einfachen Worten',s5a1:'St. 5 · Fälle aus dem Alltag',quiz:'Abschluss · Selbsttest'};
+
+function payload(cut){
+  if(!S.t0) S.t0=Date.now();
+  S.t1=Date.now();save();
+  return {v:1,n:(S.name||'').trim(),s:Math.round(S.t0/60000),e:Math.round(S.t1/60000),
+    c:allItemBlocks().map(b=>[S.first[b.id]==null?-1:S.first[b.id],b.items.length,S.tries[b.id]||0,S.sc[b.id]?S.sc[b.id][0]:-1]),
+    a:allWrites().map(({b})=>{let t=(S.w[b.id]||'').trim();return cut&&t.length>cut?t.slice(0,cut)+'…':t;})};
+}
+function b64u(bytes){let s='';for(let i=0;i<bytes.length;i++)s+=String.fromCharCode(bytes[i]);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function unb64u(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;}
+function pipe(bytes,stream){return new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer().then(b=>new Uint8Array(b));}
+function pack(obj){const raw=new TextEncoder().encode(JSON.stringify(obj));
+  if(typeof CompressionStream==='function')return pipe(raw,new CompressionStream('deflate-raw')).then(z=>'z'+b64u(z)).catch(()=>'u'+b64u(raw));
+  return Promise.resolve('u'+b64u(raw));}
+function unpack(str){const bytes=unb64u(str.slice(1));const p=str[0]==='z'?pipe(bytes,new DecompressionStream('deflate-raw')):Promise.resolve(bytes);
+  return p.then(b=>JSON.parse(new TextDecoder().decode(b)));}
+function baseUrl(){return location.href.split('#')[0];}
+function missingList(){
+  const m=[];allItemBlocks().forEach(b=>{if(!S.sc[b.id])m.push(ITEMNAMES[b.id]);});
+  allWrites().forEach(({b})=>{if(!b.optional&&OPEN[b.id]&&OPEN[b.id].p&&!(S.w[b.id]||'').trim())m.push(OPEN[b.id].l);});
+  return m;
+}
+function renderAbgabe(force){
+  const el=document.querySelector('.slide.abg');
+  const miss=missingList();
+  let h=`<p class="kicker">Abgabe</p><h2>Ergebnis abgeben</h2>`;
+  if(!(S.name||'').trim()){
+    h+=`<div class="card"><p class="task">Für die Abgabe braucht deine Lehrkraft deinen Namen.</p>
+    <input type="text" id="name2" placeholder="Vorname Nachname" autocomplete="off">
+    <p class="hint" style="margin-top:8px">Der Name steht nur im QR-Code. Er wird nicht ins Internet hochgeladen.</p>
+    <div class="row"><button class="btn" id="nameok">Weiter zur Abgabe</button></div></div>`;
+    el.innerHTML=h;
+    document.getElementById('nameok').onclick=()=>{const v=document.getElementById('name2').value.trim();if(!v){toast('Bitte trage deinen Namen ein.');return;}S.name=v;save();const n=document.getElementById('name');if(n)n.value=v;renderAbgabe(force);};
+    return;
+  }
+  if(miss.length&&!force){
+    h+=`<div class="card"><p class="task">Es fehlt noch etwas:</p><ul class="list">${miss.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+    <p class="hint">Bearbeite die Aufgaben und drücke bei Sortier- und Auswahlaufgaben auf „Prüfen“.</p>
+    <div class="row"><button class="btn" id="tofix">Zurück zu den Aufgaben</button><button class="btn ghost" id="force">Trotzdem abgeben</button></div></div>`;
+    el.innerHTML=h;
+    document.getElementById('tofix').onclick=()=>go(1);
+    document.getElementById('force').onclick=()=>renderAbgabe(true);
+    return;
+  }
+  h+=`<div class="card"><p style="font-size:20px">Fertig, <b>${esc(S.name)}</b>! Zeige diesen QR-Code deiner Lehrkraft. Erst wenn er gescannt ist, ist deine Arbeit abgegeben.</p>
+  <div class="qr" id="qbox"><p class="hint">QR-Code wird erstellt …</p></div>
+  <div class="row"><button class="btn ghost" id="back2">Antworten ansehen</button><button class="btn ghost" id="free">Nach dem Scannen: iPad freigeben</button></div></div>`;
+  el.innerHTML=h;
+  document.getElementById('back2').onclick=()=>go(SLIDES.length-2);
+  const fr=document.getElementById('free');let armed=false;
+  fr.onclick=()=>{if(!armed){armed=true;fr.textContent='Wurde der Code gescannt? Dann noch einmal tippen.';setTimeout(()=>{armed=false;fr.textContent='Nach dem Scannen: iPad freigeben';},5000);return;}
+    S=fresh();save();try{localStorage.removeItem(KEY);}catch(e){}build();go(0);};
+  const qb=document.getElementById('qbox');
+  const tryCut=[0,400,250,150,80];
+  (function attempt(k){
+    pack(payload(tryCut[k])).then(code=>{
+      const url=baseUrl()+'#r='+code;
+      try{qb.innerHTML=QR.svg(url)+`<div class="qrcap">${esc(S.name)} · ${new Date().toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'})}</div>`+(k?'<p class="hint">Sehr lange Antworten wurden für den Code gekürzt.</p>':'');}
+      catch(e){if(k<tryCut.length-1)return attempt(k+1);
+        qb.innerHTML='<p class="hint">Der QR-Code konnte nicht erstellt werden. Zeige deiner Lehrkraft die Seite „Meine Ergebnisse“.</p>';}
+    });
+  })(0);
+}
+
+/* ---------- Lehrkraft-Ansicht ---------- */
+const LK='gams-kl8-zehn-gebote-lk';
+function lkLoad(){try{return JSON.parse(localStorage.getItem(LK)||'[]');}catch(e){return [];}}
+function lkSave(l){try{localStorage.setItem(LK,JSON.stringify(l));}catch(e){}}
+const fmtMin=m=>new Date(m*60000).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'});
+function closedScore(r){let g=0,n=0;(r.c||[]).forEach(x=>{if(x[0]>=0)g+=x[0];n+=x[1];});return {g,n};}
+function lkView(){document.body.classList.add('lkmode');const v=document.getElementById('lk');v.innerHTML='';return v;}
+function teacher(code){
+  const v=lkView();v.innerHTML='<div class="card"><p>Ergebnis wird geladen …</p></div>';
+  unpack(code).then(r=>{
+    const l=lkLoad(),key=r.n+'|'+r.e;let ex=l.find(x=>x.k===key);
+    if(!ex){ex={k:key,r:r,pts:{}};l.push(ex);lkSave(l);}
+    history.replaceState(null,'',baseUrl()+'#lk='+encodeURIComponent(key));
+    showStudent(ex);
+  }).catch(()=>{v.innerHTML='<div class="card"><h2>Code nicht lesbar</h2><p>Bitte den QR-Code noch einmal scannen.</p></div>';});
+}
+function showStudent(entry){
+  const r=entry.r,v=lkView(),sc=closedScore(r),W=allWrites();
+  let h=`<p class="kicker">Lehrkraft · Abgabe gespeichert nur auf diesem Gerät</p><h2>${esc(r.n||'ohne Namen')}</h2>
+  <p class="hint">Begonnen ${fmtMin(r.s)} · abgegeben ${fmtMin(r.e)} · Dauer ${Math.max(0,r.e-r.s)} Min.</p>
+  <div class="card"><table><tr><th>Sortier- und Auswahlaufgabe</th><th>1. Versuch</th><th>zuletzt</th><th>Prüfen gedrückt</th></tr>`;
+  allItemBlocks().forEach((b,i)=>{const x=r.c[i]||[-1,b.items.length,0,-1];const f=x[0],cls=f<0?'low':f===x[1]?'ok':f/x[1]>=.5?'mid':'low';
+    h+=`<tr><td>${ITEMNAMES[b.id]||b.id}</td><td class="${cls}">${f<0?'–':f+' / '+x[1]}</td><td>${x[3]<0?'–':x[3]+' / '+x[1]}</td><td>${x[2]}×</td></tr>`;});
+  h+=`<tr class="sum"><td>Summe (1. Versuch)</td><td>${sc.g} / ${sc.n}</td><td></td><td></td></tr></table></div>`;
+  let tot=0,max=0;
+  W.forEach(({b},i)=>{const o=OPEN[b.id]||{l:b.id,p:0};const ans=r.a[i]||'';
+    h+=`<div class="card lktask"><p class="task">${esc(o.l)}${o.p?` <span class="hint">(${o.p} P.)</span>`:''}</p>
+    <div class="a">${ans?esc(ans):'<i>keine Antwort</i>'}</div>${o.eh?`<p class="hint"><b>Erwartungshorizont:</b> ${o.eh}</p>`:''}`;
+    if(o.p){max+=o.p;h+=`<div class="opts noprint">`;for(let p=0;p<=o.p;p++)h+=`<button class="opt ${entry.pts[b.id]===p?'sel':''}" data-pt="${b.id}" data-p="${p}">${p} P.</button>`;h+=`</div>`;
+      if(entry.pts[b.id]!=null){tot+=entry.pts[b.id];h+=`<p class="printonly">Bewertung: ${entry.pts[b.id]} / ${o.p} P.</p>`;}}
+    h+=`</div>`;});
+  h+=`<div class="card"><p><b>Offene Aufgaben:</b> ${tot} / ${max} P. <span class="hint">(optional – nur wenn du bewerten möchtest)</span></p></div>
+  <div class="row noprint"><button class="btn ghost" id="lkall">Alle Abgaben (Klassenliste)</button><button class="btn" id="lkprint">Drucken / als PDF</button></div>`;
+  v.innerHTML=h;
+  v.querySelectorAll('[data-pt]').forEach(bt=>bt.onclick=()=>{entry.pts[bt.dataset.pt]=+bt.dataset.p;const l=lkLoad();l.forEach(x=>{if(x.k===entry.k)x.pts=entry.pts;});lkSave(l);const y=window.scrollY;showStudent(entry);window.scrollTo(0,y);});
+  document.getElementById('lkall').onclick=()=>{location.hash='#lk';};
+  document.getElementById('lkprint').onclick=()=>{try{window.print();}catch(e){}};
+  window.scrollTo(0,0);
+}
+function classList(){
+  const l=lkLoad(),v=lkView(),W=allWrites();
+  let h=`<p class="kicker">Lehrkraft · gespeichert nur auf diesem Gerät</p><h2>Abgaben: Die Zehn Gebote</h2>`;
+  if(!l.length){v.innerHTML=h+'<div class="card"><p>Noch keine Abgaben auf diesem Gerät. Scanne die QR-Codes der Schülerinnen und Schüler mit der Kamera dieses Geräts.</p></div>';return;}
+  h+=`<div class="card"><table><tr><th>Name</th><th>Abgabe</th><th>Min.</th><th>Auswahlaufgaben (1. Versuch)</th><th>Offene Aufgaben</th></tr>`;
+  l.forEach((x,i)=>{const r=x.r,sc=closedScore(r);let op=0,has=0;Object.keys(x.pts).forEach(k=>{op+=x.pts[k];has++;});
+    h+=`<tr class="link" data-i="${i}"><td>${esc(r.n||'–')}</td><td>${fmtMin(r.e)}</td><td>${Math.max(0,r.e-r.s)}</td><td>${sc.g} / ${sc.n}</td><td>${has?op+' P.':'–'}</td></tr>`;});
+  h+=`</table><p class="hint">Auf einen Namen tippen, um die Antworten zu sehen und zu bewerten.</p></div>
+  <div class="card"><h3>Diagnose: Wo hakt es? (Anteil richtig im 1. Versuch)</h3><table>`;
+  allItemBlocks().forEach((b,i)=>{let g=0,n=0;l.forEach(x=>{const c=x.r.c[i];if(c&&c[0]>=0){g+=c[0];n+=c[1];}});const pc=n?Math.round(g/n*100):0;
+    h+=`<tr><td>${ITEMNAMES[b.id]||b.id}</td><td style="width:45%"><span class="hb" style="width:${Math.round(pc*0.75)}%"></span> ${pc} %</td></tr>`;});
+  h+=`</table></div><div class="row noprint"><button class="btn" id="csv">CSV exportieren</button><button class="btn ghost" id="lkpr">Drucken</button><button class="btn ghost" id="lkdel">Liste leeren</button></div>`;
+  v.innerHTML=h;
+  v.querySelectorAll('tr.link').forEach(tr=>tr.onclick=()=>showStudent(l[+tr.dataset.i]));
+  document.getElementById('lkpr').onclick=()=>{try{window.print();}catch(e){}};
+  document.getElementById('csv').onclick=()=>{
+    const head=['Name','Beginn','Abgabe','Minuten','Auswahl_richtig_1Versuch','Auswahl_max','Offen_Punkte'].concat(allItemBlocks().map(b=>ITEMNAMES[b.id])).concat(W.map(({b})=>(OPEN[b.id]||{l:b.id}).l));
+    const rows=[head];
+    l.forEach(x=>{const r=x.r,sc=closedScore(r);let op=0;Object.keys(x.pts).forEach(k=>op+=x.pts[k]);
+      rows.push([r.n,fmtMin(r.s),fmtMin(r.e),r.e-r.s,sc.g,sc.n,op].concat(r.c.map(c=>c[0]<0?'':c[0]+'/'+c[1])).concat(r.a));});
+    const s='﻿'+rows.map(rw=>rw.map(v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"').join(';')).join('\r\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([s],{type:'text/csv'}));a.download='KR8_Zehn_Gebote_Abgaben.csv';document.body.appendChild(a);a.click();a.remove();
+  };
+  const d=document.getElementById('lkdel');let armed=false;
+  d.onclick=()=>{if(!armed){armed=true;d.textContent='Wirklich alle Abgaben löschen? Noch einmal tippen.';setTimeout(()=>{armed=false;d.textContent='Liste leeren';},4000);return;}lkSave([]);classList();};
+}
+function route(){
+  const h=location.hash;
+  if(h.indexOf('#r=')===0)return teacher(h.slice(3));
+  if(h.indexOf('#lk=')===0){const k=decodeURIComponent(h.slice(4));const e=lkLoad().find(x=>x.k===k);return e?showStudent(e):classList();}
+  if(h==='#lk')return classList();
+  if(document.body.classList.contains('lkmode')){document.body.classList.remove('lkmode');document.getElementById('lk').innerHTML='';}
+}
+window.addEventListener('hashchange',route);
+
+build();go(S.i||0);route();
 </script>
 </body>
 </html>
