@@ -1,0 +1,191 @@
+<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kirchenjahr und Advent · Klasse 8</title>
+<style>:root{--ink:#1e2833;--muted:#5b6672;--paper:#f7f3ea;--card:#fffdf8;--stone:#e9e1d1;--line:#d9cfbb;--accent:#8a3b2e;--blue:#284a6b;--gold:#b38636;--ok:#2e6a4d;--okbg:#e5f1ea;--bad:#a3392a;--badbg:#f7e4df;--v:#6b3fa0;
+--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:18px;line-height:1.5;-webkit-text-size-adjust:100%}
+header{position:sticky;top:0;z-index:5;background:rgba(247,243,234,.96);border-bottom:1px solid var(--line);padding:10px 18px 8px}
+.top{display:flex;align-items:center;gap:14px;max-width:980px;margin:0 auto}
+.brand{font-family:var(--serif);font-size:19px;font-weight:600}.brand small{display:block;font-family:var(--sans);font-size:12px;font-weight:400;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.stations{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}.st{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 11px;font-size:13px;color:var(--muted)}.st.on{background:var(--blue);border-color:var(--blue);color:#fff}
+#cnt{font-size:13px;color:var(--muted);margin-left:8px}
+#prog{max-width:980px;margin:8px auto 0;height:4px;background:var(--stone);border-radius:4px;overflow:hidden}#bar{height:100%;background:var(--gold);width:0;transition:width .3s}
+main{max-width:980px;margin:0 auto;padding:22px 18px 120px}
+.slide{display:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}.slide.on{display:block}
+h1,h2{font-family:var(--serif);line-height:1.2;margin:0 0 12px}h1{font-size:36px}h2{font-size:29px}
+.kicker{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 4px}
+.ab{display:inline-block;background:#f2d46b;color:#3a3216;border:1px solid #d9b94a;border-radius:6px;padding:3px 12px;font-weight:700;font-size:15px;margin:0 0 10px;box-shadow:1px 2px 0 rgba(0,0,0,.12)}
+.info{background:#fbf6ea;border-left:4px solid var(--gold);padding:12px 16px;border-radius:6px;margin:10px 0}
+.task{font-weight:700;margin:14px 0 6px}
+nav{position:fixed;bottom:0;left:0;right:0;background:rgba(247,243,234,.97);border-top:1px solid var(--line);display:flex;justify-content:space-between;padding:12px 18px;gap:10px}
+button{font:inherit;font-size:17px;border:1px solid var(--blue);border-radius:10px;padding:10px 18px;cursor:pointer;background:var(--blue);color:#fff;font-weight:600}
+button.sec{background:transparent;color:var(--blue)}button:disabled{opacity:.4}
+select{font:inherit;font-size:17px;padding:8px;border-radius:8px;border:1px solid #b9ad94;background:#fff;max-width:100%}
+textarea{width:100%;min-height:110px;font:inherit;font-size:17px;padding:10px;border-radius:8px;border:1px solid #b9ad94;background:#fff}
+table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:middle}th{color:var(--blue);font-size:15px}
+.fb{margin-top:10px;padding:10px 14px;border-radius:8px;display:none}.fb.ok{display:block;background:var(--okbg);color:var(--ok)}.fb.bad{display:block;background:var(--badbg);color:var(--bad)}
+.model{display:none;margin-top:10px;background:#eef3f8;border-left:4px solid var(--blue);padding:10px 14px;border-radius:6px}
+.right{background:var(--okbg)!important}.wrong{background:var(--badbg)!important}
+.flex{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start}.wheel{width:300px;max-width:100%}
+.chips span{display:inline-block;border:1px solid var(--line);border-radius:6px;padding:2px 9px;margin:2px;font-size:16px;background:#fff}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.card{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.seg button{background:var(--stone);color:var(--ink);border-color:var(--line);font-size:16px;padding:8px 12px;font-weight:500}.seg button.sel{background:var(--blue);color:#fff}
+.plus{border:2px dashed var(--gold);border-radius:10px;padding:10px 14px;margin-top:16px}
+.sw{display:inline-block;width:16px;height:16px;border:1px solid #333;border-radius:3px;vertical-align:middle;margin-right:6px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}@media(max-width:700px){.three{grid-template-columns:1fr}.stations{display:none}}
+.three div{background:#fbf6ea;border:1px solid var(--line);border-radius:8px;padding:10px}
+.small{font-size:15px;color:var(--muted)}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}.score{font-weight:700;color:var(--blue)}
+.q{margin:14px 0}.q .seg button.r{background:var(--ok);color:#fff}.q .seg button.w{background:var(--bad);color:#fff}
+</style></head><body>
+<header><div class="top"><div class="brand">Kirchenjahr und Advent<small>Klasse 8 · Lernweg</small></div><div class="stations"><span class="st" data-r="0-5">Kirchenjahr</span><span class="st" data-r="6-9">Advent</span><span class="st" data-r="10-11">Abschluss</span></div><span id="cnt"></span></div><div id="prog"><div id="bar"></div></div></header>
+<main>
+
+<section class="slide on"><div class="kicker">Klasse 8 · Katholische Religionslehre</div><h1>Das Kirchenjahr – ein Jahr mit Jesus Christus</h1>
+<div class="info">Unser Kalender beginnt am <b>1. Januar</b>. Für Christen beginnt das neue Jahr schon am <b>Sonntag, 29. November</b>.<br><br><b>Warum wohl?</b> Schreibe eine Vermutung auf. Am Ende der Stunde prüfst du sie.</div>
+<textarea id="verm" placeholder="Meine Vermutung: …"></textarea>
+<p class="small">Arbeite Schritt für Schritt. Mit „Weiter“ kommst du zur nächsten Seite. Deine Antworten bleiben gespeichert, solange du diese Seite auf dem iPad nicht schließt.</p></section>
+
+<section class="slide"><div class="kicker">Baustein 1 · Lesen</div><h2>Was ist das Kirchenjahr?</h2>
+<div class="info">Das <b>Kirchenjahr</b> beginnt am <b>1. Adventssonntag</b>.<br>
+Im Kirchenjahr feiern Christen das <b>Leben von Jesus Christus</b>: Sie warten auf seine Geburt (Advent) und feiern seine Geburt (Weihnachten). Sie denken an sein Leiden und seinen Tod (Fastenzeit, Karfreitag) und feiern seine Auferstehung (Ostern). 50 Tage nach Ostern feiern sie, dass Gott den Heiligen Geist schenkt (Pfingsten).<br>
+Das wichtigste Fest ist <b>Ostern</b>. Darum ist jeder Sonntag ein kleines Osterfest: Jesus ist am ersten Tag der Woche auferstanden (vgl. Mk 16,2).<br>
+Es gibt zwei große Festkreise: den <b>Weihnachtsfestkreis</b> und den <b>Osterfestkreis</b>. Dazwischen liegt die <b>„Zeit im Jahreskreis“</b>. Das Kirchenjahr endet mit dem <b>Christkönigssonntag</b>.</div>
+<p class="task">Kurz-Check: Was ist das wichtigste Fest im Kirchenjahr?</p>
+<div class="seg" data-q="q0" data-ans="Ostern"><button>Weihnachten</button><button>Ostern</button><button>Pfingsten</button><button>Neujahr</button></div><div class="fb" id="fb-q0"></div></section>
+
+<section class="slide"><p class="ab">Arbeitsblatt 1</p><div class="kicker">Baustein 1 · Aufgabe 1</div><h2>Den Jahreskreis beschriften</h2>
+<p>Wähle für jeden Abschnitt den <b>Namen</b> und die <b>liturgische Farbe</b>. Der Kreis färbt sich mit. Ein Name kommt zweimal vor. Tipp: Die Länge der Abschnitte zeigt ungefähr, wie viele Wochen sie dauern.</p>
+<div class="flex"><div><svg viewBox="0 0 320 320" class="wheel"><path id="segA" d="M160.0,14.0 A146.0,146.0 0 0 1 227.8,30.7 L195.3,92.8 A75.92,75.92 0 0 0 160.0,84.1 Z" fill="#fff" stroke="#333" stroke-width="1.5"/><text id="labA" x="186.6" y="59.3" text-anchor="middle" font-size="20" font-weight="700">A</text><path id="segB" d="M227.8,30.7 A146.0,146.0 0 0 1 260.7,54.3 L212.4,105.0 A75.92,75.92 0 0 0 195.3,92.8 Z" fill="#fff" stroke="#333" stroke-width="1.5"/><text id="labB" x="224.7" y="76.8" text-anchor="middle" font-size="20" font-weight="700">B</text><path id="segC" d="M260.7,54.3 A146.0,146.0 0 0 1 300.4,119.9 L233.0,139.2 A75.92,75.92 0 0 0 212.4,105.0 Z" fill="#fff" stroke="#333" stroke-width="1.5"/><text id="labC" x="255.0" y="109.6" text-anchor="middle" font-size="20" font-weight="700">C</text><path id="segD" d="M300.4,119.9 A146.0,146.0 0 0 1 286.7,232.5 L225.9,197.7 A75.92,75.92 0 0 0 233.0,139.2 Z" fill="#fff" stroke="#333" stroke-width="1.5"/><text id="labD" x="270.2" y="180.4" text-anchor="middle" font-size="20" font-weight="700">D</text><path id="segE" d="M286.7,232.5 A146.0,146.0 0 0 1 189.8,302.9 L175.5,234.3 A75.92,75.92 0 0 0 225.9,197.7 Z" fill="#fff" stroke="#333" stroke-width="1.5"/><text id="labE" x="225.2" y="256.8" text-anchor="middle" font-size="20" font-weight="700">E</text><path id="segF" d="M189.8,302.9 A146.0,146.0 0 1 1 160.0,14.0 L160.0,84.1 A75.92,75.92 0 1 0 175.5,234.3 Z" fill="#fff" stroke="#333" stroke-width="1.5"/><text id="labF" x="49.6" y="178.4" text-anchor="middle" font-size="20" font-weight="700">F</text><text x="160.0" y="158.0" text-anchor="middle" font-size="16" font-weight="700">Kirchenjahr</text><text x="160.0" y="176.0" text-anchor="middle" font-size="10" fill="#555">ab 1. Advent, im Uhrzeigersinn</text></svg></div><div style="flex:1;min-width:300px"><table id="wt"><tr><th></th><th>Name</th><th>Farbe</th></tr></table>
+<div class="row"><button onclick="checkWheel()">Prüfen</button><button class="sec" onclick="solve('wheel')">Lösung zeigen</button><button class="sec" onclick="reset('wheel')">Neu</button><span class="score" id="sc-wheel"></span></div><div class="fb" id="fb-wheel"></div></div></div></section>
+
+<section class="slide"><div class="kicker">Baustein 1 · Aufgabe 2</div><h2>Feste einordnen</h2><p>In welchem Abschnitt (A–F) liegt das Fest? Schau dir den Kreis noch einmal an.</p>
+<table id="ft"><tr><th>Fest</th><th>Abschnitt</th></tr></table><div class="row"><button onclick="checkFeste()">Prüfen</button><button class="sec" onclick="solve('feste')">Lösung zeigen</button><button class="sec" onclick="reset('feste')">Neu</button><span class="score" id="sc-feste"></span></div><div class="fb" id="fb-feste"></div></section>
+
+<section class="slide"><div class="kicker">Baustein 1 · Aufgabe 3</div><h2>Die liturgischen Farben</h2>
+<p>Der Priester trägt im Gottesdienst verschiedene Farben. Welche Bedeutung passt?</p><table id="ct"><tr><th>Farbe</th><th>Wann?</th><th>Bedeutung</th></tr></table>
+<div class="row"><button onclick="checkFarben()">Prüfen</button><button class="sec" onclick="solve('farben')">Lösung zeigen</button><button class="sec" onclick="reset('farben')">Neu</button><span class="score" id="sc-farben"></span></div><div class="fb" id="fb-farben"></div>
+<p class="task">3 b) Denkaufgabe: Im Advent und in der Fastenzeit ist die Farbe Violett, an Weihnachten und Ostern Weiß. Erkläre in zwei Sätzen, warum das gut zusammenpasst.</p>
+<textarea id="t3b"></textarea><button class="sec" onclick="showModel('m3b','t3b')">Musterlösung vergleichen</button>
+<div class="model" id="m3b">Advent und Fastenzeit sind <b>Zeiten der Vorbereitung</b> auf ein großes Fest. Violett steht für Besinnung und Umkehr. Weiß steht für die <b>Freude</b>, wenn das Fest da ist. Die Farbe zeigt also den Weg vom Warten zur Freude.</div>
+<div class="plus"><b>Plus-Aufgabe:</b> Am 3. Adventssonntag darf der Priester <b>Rosa</b> tragen, eine Mischung aus Violett und Weiß. Was will die Kirche damit zeigen?<textarea id="tplus1" style="min-height:70px;margin-top:6px"></textarea><button class="sec" onclick="showModel('mplus1','tplus1')">Lösung zeigen</button><div class="model" id="mplus1"><b>Vorfreude:</b> Die Vorbereitungszeit ist noch nicht vorbei (Violett), aber die Freude des Festes (Weiß) leuchtet schon hinein. Der 3. Advent heißt „Gaudete“, das heißt „Freut euch!“ (vgl. Phil 4,4).</div></div></section>
+
+<section class="slide"><div class="kicker">Baustein 1 · Aufgabe 4 · Partnerarbeit</div><h2>Vergleichen und Merksatz</h2>
+<p>Vergleiche deine Ergebnisse mit deinem Partner oder deiner Partnerin. Ergänzt dann gemeinsam den Satz und schreibt ihn auch ins Heft:</p>
+<p class="task"><i>Das Kirchenjahr ist kein normaler Kalender, weil …</i></p><textarea id="t4"></textarea>
+<button class="sec" onclick="showModel('m4','t4')">Mit Musterlösung vergleichen</button><div class="model" id="m4">… Christen darin jedes Jahr das <b>Leben, den Tod und die Auferstehung Jesu Christi</b> feiern. Es beginnt mit dem Advent, und jeder Sonntag erinnert an Ostern.</div>
+<div class="info" style="margin-top:16px"><b>Gut zu wissen:</b> Auch evangelische Christen feiern das Kirchenjahr mit Advent, Weihnachten, Ostern und Pfingsten. Ihr letzter Sonntag heißt Ewigkeitssonntag. In der orthodoxen Kirche beginnt das Kirchenjahr am 1. September. Einige orthodoxe Kirchen feiern Weihnachten am 7. Januar, weil sie den älteren (julianischen) Kalender benutzen.</div></section>
+
+<section class="slide"><div class="kicker">Baustein 2 · Lesen</div><h2>Advent – warten auf die Ankunft</h2>
+<div class="info"><b>Advent</b> kommt aus dem Lateinischen: <i>adventus</i> = <b>Ankunft</b>. Wer kommt an? Christen antworten: <b>Jesus Christus</b>. Dabei denken sie an drei Zeiten:</div>
+<div class="three"><div><b>Vergangenheit – Erinnerung</b><br>Vor etwa 2000 Jahren wurde Jesus in Betlehem geboren. Daran erinnern wir uns an Weihnachten.</div>
+<div><b>Gegenwart – heute</b><br>Jesus kommt auch heute: im Gebet, im Gottesdienst und in Menschen, die Hilfe brauchen (vgl. Mt 25,40).</div>
+<div><b>Zukunft – Hoffnung</b><br>Christus kommt am Ende der Zeit wieder. Dann wird Gott alle Tränen abwischen (vgl. Offb 21,4).</div></div>
+<div class="info">Im Evangelium vom 1. Adventssonntag sagt Jesus sinngemäß: <b>„Passt auf und bleibt wach!“</b> (vgl. Mk 13,33–37). Advent heißt also nicht nur abwarten, sondern sich bewusst vorbereiten.</div></section>
+
+<section class="slide"><p class="ab">Arbeitsblatt 2</p><div class="kicker">Baustein 2 · Aufgabe 1</div><h2>Drei Zeiten des Advents</h2><p>Zu welcher Zeit passt die Aussage?</p>
+<table id="vt"><tr><th>Aussage</th><th>Zeit</th></tr></table><div class="row"><button onclick="checkV()">Prüfen</button><button class="sec" onclick="solve('v')">Lösung zeigen</button><button class="sec" onclick="reset('v')">Neu</button><span class="score" id="sc-v"></span></div><div class="fb" id="fb-v"></div>
+<p class="task">1 b) Denkaufgabe: Jesus ist schon vor 2000 Jahren geboren. Warum feiern Christen trotzdem jedes Jahr Advent? Erkläre mit Hilfe der drei Zeiten.</p>
+<textarea id="t1b"></textarea><button class="sec" onclick="showModel('m1b','t1b')">Musterlösung vergleichen</button>
+<div class="model" id="m1b">Advent ist nicht nur <b>Erinnerung</b> an die Geburt (Vergangenheit). Christen <b>hoffen</b>, dass Christus wiederkommt (Zukunft). Und sie wollen offen sein, dass Jesus <b>heute</b> in ihr Leben kommt: im Gebet, im Gottesdienst, im Mitmenschen (Gegenwart).</div></section>
+
+<section class="slide"><div class="kicker">Baustein 2 · Aufgabe 2 · Partnerarbeit</div><h2>Adventszeichen prüfen</h2>
+<p>Was hat das Zeichen mit <b>Warten, Hoffnung oder Ankunft Jesu</b> zu tun? Wählt eine Bewertung und begründet kurz.</p><div class="cards" id="sym"></div>
+<button class="sec" style="margin-top:12px" onclick="document.querySelectorAll('.symm').forEach(e=>e.style.display='block')">Lösungsideen anzeigen</button>
+<p class="small">Eure Bewertung darf abweichen. Wichtig ist eine stimmige Begründung.</p></section>
+
+<section class="slide"><div class="kicker">Transfer · Fallbeispiel</div><h2>Antwort an Tim</h2>
+<div class="info">Tim sagt: <i>„Advent ist doch nur Stress: Geschenke kaufen, Plätzchen backen, Termine. Und Warten ist sowieso langweilig.“</i></div>
+<p>Schreibe Tim eine Antwort (3–4 Sätze). Benutze mindestens <b>zwei</b> dieser Begriffe:</p>
+<div class="chips"><span>Ankunft</span><span>Hoffnung</span><span>Licht</span><span>Vorbereitung</span><span>wach sein</span></div>
+<p class="small">Hilfe: „Ich verstehe dich, aber …“ · „Das Wort Advent bedeutet …“ · „Warten kann auch schön sein, weil …“</p>
+<textarea id="ttim" style="min-height:150px"></textarea><div id="tcheck" class="small"></div>
+<div class="plus"><b>Plus-Aufgabe:</b> Jesus sagt: „Bleibt wach!“ Was könnte „wach sein“ im Advent für Jugendliche heute bedeuten? Nenne zwei konkrete Beispiele.<textarea id="tplus2" style="min-height:70px;margin-top:6px"></textarea></div></section>
+
+<section class="slide"><div class="kicker">Hefteintrag</div><h2>Das habe ich heute gelernt</h2>
+<div class="info"><b>Merke 1:</b> Das Kirchenjahr beginnt am 1. Advent. In ihm feiern Christen jedes Jahr das Leben, den Tod und die Auferstehung Jesu Christi. Das wichtigste Fest ist Ostern, und jeder Sonntag erinnert daran.</div>
+<table><tr><td><span class="sw" style="background:#6b3fa0"></span><b>violett</b></td><td>Advent, Fastenzeit: Besinnung, Umkehr, Vorbereitung</td></tr><tr><td><span class="sw" style="background:#fff"></span><b>weiß</b></td><td>Weihnachten, Ostern: Freude, Licht, Christus lebt</td></tr><tr><td><span class="sw" style="background:#c0392b"></span><b>rot</b></td><td>Pfingsten, Karfreitag, Märtyrer: Heiliger Geist, Hingabe</td></tr><tr><td><span class="sw" style="background:#3f8f4a"></span><b>grün</b></td><td>Zeit im Jahreskreis: Hoffnung, Wachstum</td></tr></table>
+<div class="info"><b>Merke 2:</b> Advent (lat. adventus) bedeutet Ankunft. Christen bereiten sich auf die Ankunft Jesu Christi vor: Sie erinnern sich an seine Geburt, begegnen ihm heute und hoffen auf seine Wiederkunft.</div>
+<p class="task">Zurück zum Anfang: Deine Vermutung war:</p><div id="vback" class="card small"></div>
+<p>Stimmt sie? Ergänze, wenn nötig: Das Kirchenjahr beginnt im Advent, weil …</p><textarea id="tend" style="min-height:70px"></textarea>
+<button class="sec" onclick="showModel('mend','tend')">Lösung</button><div class="model" id="mend">… es mit dem Warten auf Jesus Christus beginnt. Das ganze Kirchenjahr erzählt sein Leben: von der Erwartung seiner Geburt bis zu Ostern und Pfingsten.</div></section>
+<section class="slide"><div class="kicker">Abschluss</div><h2>Exit-Quiz</h2><p>Fünf Fragen – tippe jeweils die richtige Antwort.</p><div id="exq"></div>
+<div class="row"><button class="sec" onclick="resetQuiz()">Neu</button><span class="score" id="sc-quiz"></span></div><div class="info" id="total" style="margin-top:14px"></div></section>
+</main>
+<nav><button class="sec" id="prev" onclick="go(-1)">Zurück</button><button id="next" onclick="go(1)">Weiter</button></nav>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+let st={};try{st=JSON.parse(localStorage.getItem('kj8')||'{}')}catch(e){}
+function save(){try{localStorage.setItem('kj8',JSON.stringify(st))}catch(e){}}
+const slides=$$('.slide');let cur=0;
+function go(d){cur=Math.max(0,Math.min(slides.length-1,cur+d));slides.forEach((s,i)=>s.classList.toggle('on',i==cur));
+ $('#cnt').textContent=(cur+1)+' / '+slides.length;$('#bar').style.width=((cur+1)/slides.length*100)+'%';
+ $('#prev').disabled=cur==0;$('#next').disabled=cur==slides.length-1;window.scrollTo(0,0);
+ $$('.st').forEach(s=>{const[a,b]=s.dataset.r.split('-').map(Number);s.classList.toggle('on',cur>=a&&cur<=b)});if(cur==slides.length-2)$('#vback').textContent=$('#verm').value||'(keine Vermutung notiert)';}
+function fb(id,ok,msg){const e=$('#fb-'+id);e.className='fb '+(ok?'ok':'bad');e.innerHTML=msg}
+function showModel(m,t){if(t&&!$('#'+t).value.trim()){alert('Schreibe zuerst deine eigene Antwort.');return}$('#'+m).style.display='block'}
+// textareas persist
+$$('textarea').forEach(t=>{t.value=st[t.id]||'';t.addEventListener('input',()=>{st[t.id]=t.value;save();if(t.id=='ttim')tim()})});
+// segmented quick checks
+$$('.seg[data-q]').forEach(g=>g.querySelectorAll('button').forEach(b=>b.onclick=()=>{g.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');
+ const ok=b.textContent==g.dataset.ans;fb(g.dataset.q,ok,ok?'Richtig! Ostern ist die Mitte: Jesus ist auferstanden.':'Noch nicht. Lies den Text noch einmal: Welches Fest feiert man jeden Sonntag „im Kleinen“?')}));
+// wheel
+const W=[['A','Advent','violett'],['B','Weihnachtszeit','weiß'],['C','Zeit im Jahreskreis','grün'],['D','Fastenzeit','violett'],['E','Osterzeit','weiß'],['F','Zeit im Jahreskreis','grün']];
+const COL={violett:'#6b3fa0','weiß':'#ffffff','grün':'#3f8f4a'};
+const names=['Advent','Weihnachtszeit','Fastenzeit','Osterzeit','Zeit im Jahreskreis'];
+function opts(arr){return '<option value="">– wählen –</option>'+arr.map(a=>`<option>${a}</option>`).join('')}
+W.forEach(([L])=>{$('#wt').insertAdjacentHTML('beforeend',`<tr id="wr${L}"><td><b>${L}</b></td><td><select id="wn${L}">${opts(names)}</select></td><td><select id="wc${L}">${opts(['violett','weiß','grün'])}</select></td></tr>`)});
+function paint(){W.forEach(([L])=>{const c=$('#wc'+L).value;$('#seg'+L).setAttribute('fill',c?COL[c]:'#fff');$('#lab'+L).setAttribute('fill',(c=='violett'||c=='grün')?'#fff':'#222')})}
+$$('#wt select').forEach(s=>{if(st[s.id])s.value=st[s.id];s.onchange=()=>{st[s.id]=s.value;save();paint()}});paint();
+function checkWheel(){let n=0;W.forEach(([L,nm,c])=>{const ok=$('#wn'+L).value==nm&&$('#wc'+L).value==c;if(ok)n++;$('#wr'+L).className=ok?'right':'wrong'});
+ setScore('wheel',n);fb('wheel',n==6,n==6?'Alles richtig! Das Kirchenjahr hat zwei Festkreise (Weihnachten, Ostern) und dazwischen die Zeit im Jahreskreis.':`${n} von 6 richtig. Rot markierte Zeilen noch einmal prüfen. Tipp: Vor den großen Festen ist die Farbe immer gleich.`)}
+// feste
+const F=[['Weihnachten (25. Dezember)','B'],['Aschermittwoch (Beginn der 40 Tage)','D'],['Karfreitag','D'],['Ostersonntag','E'],['Christi Himmelfahrt (40 Tage nach Ostern)','E'],['Pfingsten (50 Tage nach Ostern)','E'],['Fronleichnam (Juni)','F'],['Christkönigssonntag (letzter Sonntag)','F']];
+F.forEach(([f],i)=>$('#ft').insertAdjacentHTML('beforeend',`<tr id="fr${i}"><td>${f}</td><td><select id="fs${i}">${opts(['A','B','C','D','E','F'])}</select></td></tr>`));
+$$('#ft select').forEach(s=>{if(st[s.id])s.value=st[s.id];s.onchange=()=>{st[s.id]=s.value;save()}});
+function checkFeste(){let n=0;F.forEach(([f,a],i)=>{const v=$('#fs'+i).value,ok=v==a||(i==2&&v=='E');if(ok)n++;$('#fr'+i).className=ok?'right':'wrong'});
+ setScore('feste',n);fb('feste',n==F.length,n==F.length?'Super! Pfingsten ist der Abschluss der Osterzeit. Karfreitag liegt ganz am Ende der Fastenzeit, kurz vor Ostern.':`${n} von ${F.length} richtig. Tipp: Himmelfahrt und Pfingsten zählt man von Ostern aus.`)}
+// farben
+const C=[['violett','#6b3fa0','Advent, Fastenzeit','Besinnung, Umkehr, Vorbereitung'],['weiß','#fff','Weihnachten, Ostern, Feste von Jesus und Maria','Freude, Licht, Fest – Christus lebt'],['rot','#c0392b','Pfingsten, Palmsonntag, Karfreitag, Märtyrer','Feuer des Heiligen Geistes, Blut der Märtyrer'],['grün','#3f8f4a','Zeit im Jahreskreis','Hoffnung, Wachstum, Leben im Alltag']];
+const mean=C.map(c=>c[3]).sort();
+C.forEach(([f,h,w],i)=>$('#ct').insertAdjacentHTML('beforeend',`<tr id="cr${i}"><td><span class="sw" style="background:${h}"></span><b>${f}</b></td><td>${w}</td><td><select id="cs${i}">${opts(mean)}</select></td></tr>`));
+$$('#ct select').forEach(s=>{if(st[s.id])s.value=st[s.id];s.onchange=()=>{st[s.id]=s.value;save()}});
+function checkFarben(){let n=0;C.forEach((c,i)=>{const ok=$('#cs'+i).value==c[3];if(ok)n++;$('#cr'+i).className=ok?'right':'wrong'});setScore('farben',n);fb('farben',n==4,n==4?'Alles richtig!':`${n} von 4 richtig. Denk an Pfingsten: Feuerzungen (Apg 2,3).`)}
+// V/G/Z
+const V=[['Maria bringt in Betlehem ihr Kind zur Welt.','Vergangenheit'],['Eine Schülerin besucht im Advent ihre einsame Nachbarin.','Gegenwart'],['„Gott wird alle Tränen abwischen.“ (Offb 21,4)','Zukunft'],['Menschen hören in der Messe das Wort Gottes und beten.','Gegenwart'],['Hirten finden das Kind in der Krippe.','Vergangenheit'],['Christen beten: „Komm, Herr Jesus!“ (Offb 22,20)','Zukunft']];
+V.forEach(([t],i)=>$('#vt').insertAdjacentHTML('beforeend',`<tr id="vr${i}"><td>${t}</td><td><select id="vs${i}">${opts(['Vergangenheit','Gegenwart','Zukunft'])}</select></td></tr>`));
+$$('#vt select').forEach(s=>{if(st[s.id])s.value=st[s.id];s.onchange=()=>{st[s.id]=s.value;save()}});
+function checkV(){let n=0;V.forEach(([t,a],i)=>{const ok=$('#vs'+i).value==a;if(ok)n++;$('#vr'+i).className=ok?'right':'wrong'});setScore('v',n);fb('v',n==6,n==6?'Richtig! Die Nachbarin: Jesus sagt, was wir für andere tun, tun wir für ihn (Mt 25,40).':`${n} von 6 richtig. Tipp: „Komm, Herr Jesus!“ ist eine Bitte. Worauf warten Christen noch?`)}
+// symbols
+const SY=[['Adventskranz','Kreis aus grünen Zweigen mit vier Kerzen. Erfunden 1839 von dem evangelischen Theologen Johann Hinrich Wichern in Hamburg.','Kreis ohne Ende: Gott ist ewig. Grün: Hoffnung und Leben. Jeden Sonntag brennt eine Kerze mehr. Das Licht wächst, Weihnachten kommt näher (Jesus ist das Licht der Welt, Joh 8,12).'],
+['Adventskalender','24 Türchen bis Weihnachten. Früher mit Bildern oder Bibelversen, heute oft mit Schokolade oder Kosmetik.','Teils: Er hilft, die Tage bewusst zu zählen (Warten). Oft geht es aber nur um Süßigkeiten, ohne Bezug zu Jesus.'],
+['Barbarazweig','Am 4. Dezember (Fest der hl. Barbara) stellt man Kirschzweige ins Wasser. Oft blühen sie an Weihnachten.','Mitten im Winter blüht neues Leben. Das ist ein Zeichen der Hoffnung, dass mit Jesus neues Leben in die dunkle Welt kommt.'],
+['Hl. Nikolaus (6.12.)','Bischof von Myra (heute Türkei), 4. Jahrhundert. Er half armen Menschen, oft heimlich. Auch in der orthodoxen Kirche sehr verehrt.','Er zeigt, wie man Jesus heute begegnet: durch Hilfe für Arme (Mt 25,40). Die Weihnachtsmann-Werbung hat dagegen kaum Bezug.'],
+['Black Friday (27.11.)','Rabatt-Tag mit sehr viel Werbung: „Jetzt schnell kaufen!“','Kein Bezug zu Jesus. Eher Hektik statt Vorbereitung, das Gegenteil von „wach sein“ im Sinn des Advents.']];
+SY.forEach(([n,i,m],k)=>$('#sym').insertAdjacentHTML('beforeend',`<div class="card"><b>${n}</b><div class="small">${i}</div><div class="seg" id="sg${k}"><button>passt gut</button><button>teils</button><button>gar nicht</button></div><textarea id="sy${k}" style="min-height:60px" placeholder="Begründung …"></textarea><div class="model symm">${m}</div></div>`));
+SY.forEach((_,k)=>{const g=$('#sg'+k);g.querySelectorAll('button').forEach(b=>{if(st['sg'+k]==b.textContent)b.classList.add('sel');b.onclick=()=>{g.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');st['sg'+k]=b.textContent;save()}});
+ const t=$('#sy'+k);t.value=st['sy'+k]||'';t.oninput=()=>{st['sy'+k]=t.value;save()}});
+function tim(){const t=$('#ttim').value.toLowerCase(),w=['ankunft','hoffnung','licht','vorbereit','wach'].filter(x=>t.includes(x)).length,s=(t.match(/[.!?](\s|$)/g)||[]).length;
+ $('#tcheck').textContent=`Begriffe benutzt: ${w} von mind. 2 · Sätze: ${s} von 3–4`}
+
+const KEY={wheel:[W.length,()=>W.forEach(([L,n,c])=>{$('#wn'+L).value=n;$('#wc'+L).value=c}),()=>W.forEach(([L])=>{$('#wn'+L).value='';$('#wc'+L).value='';$('#wr'+L).className=''})],
+ feste:[F.length,()=>F.forEach(([f,a],i)=>$('#fs'+i).value=a),()=>F.forEach((_,i)=>{$('#fs'+i).value='';$('#fr'+i).className=''})],
+ farben:[4,()=>C.forEach((c,i)=>$('#cs'+i).value=c[3]),()=>C.forEach((_,i)=>{$('#cs'+i).value='';$('#cr'+i).className=''})],
+ v:[6,()=>V.forEach(([t,a],i)=>$('#vs'+i).value=a),()=>V.forEach((_,i)=>{$('#vs'+i).value='';$('#vr'+i).className=''})]};
+const RUN={wheel:checkWheel,feste:checkFeste,farben:checkFarben,v:checkV};
+let pts=st.pts||{};
+function setScore(k,n){pts[k]=n;st.pts=pts;save();$('#sc-'+k).textContent=n+' / '+(k=='quiz'?QZ.length:KEY[k][0])+' Punkte';total()}
+function solve(k){KEY[k][1]();$$('select').forEach(s=>{st[s.id]=s.value});save();if(k=='wheel')paint();pts[k]=0;RUN[k]();setScore(k,0);$('#sc-'+k).textContent='Lösung angezeigt – 0 Punkte'}
+function reset(k){KEY[k][2]();$$('select').forEach(s=>{st[s.id]=s.value});save();if(k=='wheel')paint();$('#fb-'+k).className='fb';delete pts[k];$('#sc-'+k).textContent='';total()}
+const QZ=[['Wann beginnt das Kirchenjahr?',['am 1. Januar','am 1. Adventssonntag','an Ostern'],1],
+['Welche Farbe trägt der Priester im Advent?',['violett','grün','rot'],0],
+['Was bedeutet das lateinische Wort „adventus“?',['Warten','Ankunft','Licht'],1],
+['Welches ist das wichtigste Fest im Kirchenjahr?',['Weihnachten','Pfingsten','Ostern'],2],
+['Welche Farbe passt zu Pfingsten?',['rot – Feuer des Heiligen Geistes','weiß – Freude','grün – Alltag'],0]];
+function buildQuiz(){$('#exq').innerHTML=QZ.map((q,i)=>`<div class="q"><b>${i+1}. ${q[0]}</b><div class="seg" id="qz${i}">${q[1].map((o,j)=>`<button data-j="${j}">${o}</button>`).join('')}</div></div>`).join('');
+ QZ.forEach((q,i)=>$$('#qz'+i+' button').forEach(b=>b.onclick=()=>{const g=$('#qz'+i);if(g.dataset.done)return;g.dataset.done=1;const ok=+b.dataset.j==q[2];b.classList.add(ok?'r':'w');if(!ok)g.querySelectorAll('button')[q[2]].classList.add('r');
+ g.dataset.ok=ok?1:0;const done=$$('#exq .seg').filter(x=>x.dataset.done);if(done.length==QZ.length)setScore('quiz',done.filter(x=>x.dataset.ok=='1').length)}))}
+function resetQuiz(){delete pts.quiz;$('#sc-quiz').textContent='';buildQuiz();total()}
+function total(){const max=6+F.length+4+6+QZ.length;let s=0;for(const k in pts)s+=pts[k];$('#total').innerHTML=`<b>Deine Punkte insgesamt: ${s} / ${max}</b><br><span class="small">Zeige dieses Ergebnis deiner Lehrkraft.</span>`}
+buildQuiz();for(const k in pts)if($('#sc-'+k))$('#sc-'+k).textContent=pts[k]+' Punkte';total();
+tim();go(0);
+</script></body></html>
